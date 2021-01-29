@@ -32,7 +32,7 @@ Dump of assembler code for function main:
    0x080484f5 <+97>:	call   0x8048390 <puts@plt>           ; puts("\nAuthenticated!");
    0x080484fa <+102>:	movl   $0x8048649,(%esp)              ; load arg - "/bin/sh"
    0x08048501 <+109>:	call   0x80483a0 <system@plt>         ; system("/bin/sh"); open shell
-   0x08048506 <+114>:	mov    $0x0,%eax                      ; load argument - 0
+   0x08048506 <+114>:	mov    $0x0,%eax                      ; load arg - 0
    0x0804850b <+119>:	jmp    0x804851e <main+138>           ; jump to return(0);
    
    0x0804850d <+121>:	movl   $0x8048651,(%esp)
