@@ -28,9 +28,9 @@ Dump of assembler code for function main:
    0x080484e7 <+83>:	cmp    $0x149c,%eax                   ; compare password = 5276?
    0x080484ec <+88>:	jne    0x804850d <main+121>           ; jump past system() call
    
-   0x080484ee <+90>:	movl   $0x8048639,(%esp)              ; load argument - "\nAuthenticated!"
+   0x080484ee <+90>:	movl   $0x8048639,(%esp)              ; load arg - "\nAuthenticated!"
    0x080484f5 <+97>:	call   0x8048390 <puts@plt>           ; puts("\nAuthenticated!");
-   0x080484fa <+102>:	movl   $0x8048649,(%esp)              ; load argument - "/bin/sh"
+   0x080484fa <+102>:	movl   $0x8048649,(%esp)              ; load arg - "/bin/sh"
    0x08048501 <+109>:	call   0x80483a0 <system@plt>         ; system("/bin/sh"); open shell
    0x08048506 <+114>:	mov    $0x0,%eax                      ; load argument - 0
    0x0804850b <+119>:	jmp    0x804851e <main+138>           ; jump to return(0);
