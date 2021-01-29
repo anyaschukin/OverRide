@@ -13,7 +13,7 @@ For each level:
 
 ## Levels Overview
 
-* Level 0 - 
+* Level 0 - Hardcoded password
 
 * Level 1 - 
 
