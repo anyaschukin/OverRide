@@ -6,6 +6,13 @@ Hardcoded password, discoverable with gdb
 
 ## Context
 
+Let's start by logging in from a separate shell.
+```
+>$ ssh level00@{VM_IP} -p 4242
+...
+level00@192.168.0.21's password: level00
+```
+
 We find a binary with owner ```level01``` and SUID.
 ```
 level00@OverRide:~$ ls -l
