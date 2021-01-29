@@ -2,7 +2,7 @@
 
 ```
 level00@OverRide:~$ gdb -q level00
-Reading symbols from /home/users/level00/level00...(no debugging symbols found)...done.
+...
 (gdb) disas main
 Dump of assembler code for function main:
    0x08048494 <+0>:	push   %ebp
