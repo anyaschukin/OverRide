@@ -45,4 +45,4 @@ Mount the SnowCrash.iso to the VM:
 
 > New VM > settings > Storage > Under IDE Controller there is a CD icon with a + sign on it...
 
-> click on the CD then select RainFall.iso
+> click on the CD then select OverRide.iso
