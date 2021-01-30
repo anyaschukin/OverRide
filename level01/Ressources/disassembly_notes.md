@@ -24,6 +24,7 @@ Dump of assembler code for function main:
    0x080484e9 <+25>:	mov    %ebx,%edi
    0x080484eb <+27>:	mov    %edx,%ecx
    0x080484ed <+29>:	rep stos %eax,%es:(%edi)
+   
    0x080484ef <+31>:	movl   $0x0,0x5c(%esp)
    0x080484f7 <+39>:	movl   $0x80486b8,(%esp)                ;  "********* ADMIN LOGIN PROMPT *********"
    0x080484fe <+46>:	call   0x8048380 <puts@plt>
