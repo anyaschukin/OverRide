@@ -29,15 +29,13 @@ me! does not have access!
 
 ### main() overview
 
-Investigating with gdb we find no other functions apart from ```main()```.
+Investigating with gdb we find no other functions apart from ```main()```. See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level02/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 First ```main()``` reads the correct password for user ```level03```, from the ```/home/users/level03/.pass``` file, into a variable on the stack.
 
 Then ```main()``` prompts user for username and password, reading from stdin.
 
 Finally ```strncmp()``` compares the password input by user with the correct password. If the password is correct ```system("/bin/sh")``` opens a shell.
-
-See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level02/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ### Exploit
 
