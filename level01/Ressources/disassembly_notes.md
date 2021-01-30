@@ -57,7 +57,7 @@ Dump of assembler code for function main:
    0x08048571 <+161>:	mov    %eax,(%esp)                      ; set argument 1
    0x08048574 <+164>:	call   0x8048370 <fgets@plt>            ; fgets(esp, esp+4, esp+8) ... fgets(password, 100, user input)
    
-   0x08048579 <+169>:	lea    0x1c(%esp),%eax                  ; password is stored on the stack
+   0x08048579 <+169>:	lea    0x1c(%esp),%eax                  ; buffer is stored on the stack at esp+0x1c
    0x0804857d <+173>:	mov    %eax,(%esp)
    0x08048580 <+176>:	call   0x80484a3 <verify_user_pass>     ; verify user password
    
