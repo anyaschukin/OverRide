@@ -7,7 +7,8 @@ level02@OverRide:~$ gdb -q level02
 Dump of assembler code for function main:
    0x0000000000400814 <+0>:	push   %rbp
    0x0000000000400815 <+1>:	mov    %rsp,%rbp
-   
+
+
 #### Initialize local variables on stack ####
    
    0x0000000000400818 <+4>:	sub    $0x120,%rsp                ; allocate 288 bytes on stack
@@ -49,6 +50,7 @@ Dump of assembler code for function main:
    
    0x0000000000400891 <+125>:	movl   $0x0,-0xc(%rbp)            ; int pass_len; 4 bytes
 
+
 #### Open password file ####
 
    0x0000000000400898 <+132>:	mov    $0x400bb0,%edx             ; "r"
@@ -59,6 +61,7 @@ Dump of assembler code for function main:
    0x00000000004008ad <+153>:	mov    %rax,-0x8(%rbp)            ; store fopen() return
    0x00000000004008b1 <+157>:	cmpq   $0x0,-0x8(%rbp)            ; fopen() return 0?
    0x00000000004008b6 <+162>:	jne    0x4008e6 <main+210>        ; jump past exit(1);
+
 
 #### Open Error exit(1) ####
 
@@ -72,6 +75,7 @@ Dump of assembler code for function main:
    0x00000000004008d7 <+195>:	callq  0x400720 <fwrite@plt>      ; fwrite("ERROR: failed to open password file\n", 1, 36, stderr);
    0x00000000004008dc <+200>:	mov    $0x1,%edi                  ; load arg - 1
    0x00000000004008e1 <+205>:	callq  0x400710 <exit@plt>        ; exit(1);
+
 
 #### Read password file ####
 
@@ -89,7 +93,8 @@ Dump of assembler code for function main:
    0x0000000000400915 <+257>:	mov    %rax,%rdi                  ; load arg 1 - password
    0x0000000000400918 <+260>:	callq  0x4006d0 <strcspn@plt>     ; strcspn(pass, "\n")
    0x000000000040091d <+265>:	movb   $0x0,-0xa0(%rbp,%rax,1)    ; overwrite "\n" with \0
-   
+
+
 #### Read Error exit(1) ####
    
    0x0000000000400925 <+273>:	cmpl   $0x29,-0xc(%rbp)           ; pass_len != 41?
@@ -116,11 +121,13 @@ Dump of assembler code for function main:
    0x0000000000400973 <+351>:	mov    $0x1,%edi                  ; load arg - 1
    0x0000000000400978 <+356>:	callq  0x400710 <exit@plt>        ; exit(1);
 
+
 #### Close file ####
 
    0x000000000040097d <+361>:	mov    -0x8(%rbp),%rax            ; *file
    0x0000000000400981 <+365>:	mov    %rax,%rdi
    0x0000000000400984 <+368>:	callq  0x4006a0 <fclose@plt>      ; fclose(file);
+
 
 #### Print username prompt ####
 
@@ -137,6 +144,7 @@ Dump of assembler code for function main:
    0x00000000004009b9 <+421>:	mov    $0x0,%eax
    0x00000000004009be <+426>:	callq  0x4006c0 <printf@plt>      ; printf("--[ Username: ");
 
+
 #### Read username ####
 
    0x00000000004009c3 <+431>:	mov    0x20087e(%rip),%rax        # 0x601248 <stdin@@GLIBC_2.2.5>
@@ -151,13 +159,15 @@ Dump of assembler code for function main:
    0x00000000004009e7 <+467>:	mov    %rax,%rdi                  ; load arg 1 - username
    0x00000000004009ea <+470>:	callq  0x4006d0 <strcspn@plt>     ; strcspn(&username, "\n")
    0x00000000004009ef <+475>:	movb   $0x0,-0x70(%rbp,%rax,1)    ; overwrite "\n" with \0
- 
+
+
 #### Print password prompt ####
    
    0x00000000004009f4 <+480>:	mov    $0x400ce8,%eax             ; "--[ Password: "
    0x00000000004009f9 <+485>:	mov    %rax,%rdi
    0x00000000004009fc <+488>:	mov    $0x0,%eax
    0x0000000000400a01 <+493>:	callq  0x4006c0 <printf@plt>      ; printf("--[ Password: ");
+
 
 #### Read password ####
 
@@ -177,6 +187,7 @@ Dump of assembler code for function main:
    0x0000000000400a40 <+556>:	mov    $0x400cf8,%edi             ; '*' <repeats 41 times>
    0x0000000000400a45 <+561>:	callq  0x400680 <puts@plt>        ; puts("*****************************************");
 
+
 #### Validate password ####
 
    0x0000000000400a4a <+566>:	lea    -0x110(%rbp),%rcx          ; user_pass
@@ -187,6 +198,7 @@ Dump of assembler code for function main:
    0x0000000000400a63 <+591>:	callq  0x400670 <strncmp@plt>     ; strncmp(password, user_pass, 41)
    0x0000000000400a68 <+596>:	test   %eax,%eax                  ; correct password?
    0x0000000000400a6a <+598>:	jne    0x400a96 <main+642>        ; jump past system() call
+
 
 #### System() open shell, return(0) ####
 
@@ -203,7 +215,8 @@ Dump of assembler code for function main:
    0x0000000000400a8f <+635>:	mov    $0x0,%eax                  ; load (0) for return (0)
    0x0000000000400a94 <+640>:	leaveq
    0x0000000000400a95 <+641>:	retq                              ; return (0)
-   
+
+
 #### Wrong password, exit(1) ####
    
    0x0000000000400a96 <+642>:	lea    -0x70(%rbp),%rax           ; username
