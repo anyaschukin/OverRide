@@ -82,17 +82,19 @@ Let's take a closer look at ```verify_user_name()```.
 (gdb) disas verify_user_name
    0x08048464 <+0>:	push   %ebp
    0x08048465 <+1>:	mov    %esp,%ebp
+   
    0x08048467 <+3>:	push   %edi
    0x08048468 <+4>:	push   %esi
    0x08048469 <+5>:	sub    $0x10,%esp
-   0x0804846c <+8>:	movl   $0x8048690,(%esp)
+   0x0804846c <+8>:	movl   $0x8048690,(%esp)                  ; "verifying username....\n"
    0x08048473 <+15>:	call   0x8048380 <puts@plt>
-   0x08048478 <+20>:	mov    $0x804a040,%edx
-   0x0804847d <+25>:	mov    $0x80486a8,%eax
+   
+   0x08048478 <+20>:	mov    $0x804a040,%edx                    ; <a_user_name>:	 ""
+   0x0804847d <+25>:	mov    $0x80486a8,%eax                    ; "dat_wil"
    0x08048482 <+30>:	mov    $0x7,%ecx
    0x08048487 <+35>:	mov    %edx,%esi
    0x08048489 <+37>:	mov    %eax,%edi
-   0x0804848b <+39>:	repz cmpsb %es:(%edi),%ds:(%esi)
+   0x0804848b <+39>:	repz cmpsb %es:(%edi),%ds:(%esi)          ; 
    0x0804848d <+41>:	seta   %dl
    0x08048490 <+44>:	setb   %al
    0x08048493 <+47>:	mov    %edx,%ecx
@@ -111,15 +113,16 @@ Let's take a closer look at ```verify_user_pass()```.
 (gdb) disas verify_user_pass
    0x080484a3 <+0>:	push   %ebp
    0x080484a4 <+1>:	mov    %esp,%ebp
+   
    0x080484a6 <+3>:	push   %edi
    0x080484a7 <+4>:	push   %esi
    0x080484a8 <+5>:	mov    0x8(%ebp),%eax
    0x080484ab <+8>:	mov    %eax,%edx
-   0x080484ad <+10>:	mov    $0x80486b0,%eax
+   0x080484ad <+10>:	mov    $0x80486b0,%eax                    ;  "admin"
    0x080484b2 <+15>:	mov    $0x5,%ecx
    0x080484b7 <+20>:	mov    %edx,%esi
    0x080484b9 <+22>:	mov    %eax,%edi
-   0x080484bb <+24>:	repz cmpsb %es:(%edi),%ds:(%esi)
+   0x080484bb <+24>:	repz cmpsb %es:(%edi),%ds:(%esi)          ; compare paramter and "admin"
    0x080484bd <+26>:	seta   %dl
    0x080484c0 <+29>:	setb   %al
    0x080484c3 <+32>:	mov    %edx,%ecx
