@@ -24,16 +24,16 @@ nope, incorrect username...
 
 ## Solution
 
-Let's take a deeper look at the program. 
+Let's take a deeper look at the program. <br />
 ``
 level01@OverRide:~$ gdb -q level01
 (gdb) disas main
    0x0804852d <+93>:	call   0x8048464 <verify_user_name>
    0x08048580 <+176>:	call   0x80484a3 <verify_user_pass>
-``
+```
 
 
-Using our trusty [pattern generator + EIP offset tool](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/), we crash the program and find we can overwrite the EIP at offset 80.
+Using our trusty [pattern generator + EIP offset tool](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/), we crash the program and find we can overwrite the EIP at offset 80. <br />
 ```
 (gdb) r
 Starting program: /home/users/level01/level01
