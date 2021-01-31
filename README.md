@@ -17,7 +17,7 @@ For each level:
 
 * Level 1 - 
 
-* Level 2 - 
+* Level 2 - printf() format string attack
 
 * Level 3 - 
 
