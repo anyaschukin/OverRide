@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int	main(int ac, char **av)
+int	main(int argc, char **argv)
 {
 // Initialize variables
 	char	username[100];
