@@ -28,7 +28,7 @@ nope, incorrect username...
 Let's take a deeper look at the program.
 See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level01/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-First ```main()``` prompts for a username and password, reading from stdin with ```fgets()```, and then calls ```verify_user_name()``` and ```verify_user_pass()```.
+First ```main()``` prompts for a username and password, reading from stdin with ```fgets()```, and then calling ```verify_user_name()``` and ```verify_user_pass()```.
 
 In each case, user input for username and password is compared with a hard value in memory and jumps to exit if not equal. 
 
@@ -50,10 +50,9 @@ nope, incorrect password...
 
 ### Exploit
 
-First off, we can identify a vulnerability with ```fgets()``` - which we have used in [Rainfall](https://github.com/anyashuka/Rainfall/tree/master/level1) to trigger a buffer overflow. 
+First off, we can identify a vulnerability with ```fgets()``` to trigger a buffer overflow. 
 
 Using our trusty [pattern generator and EIP offset tool](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/), we crash the program and find we can overwrite the EIP at offset 80.
-
 ```
 (gdb) r
 Starting program: /home/users/level01/level01
@@ -69,6 +68,14 @@ nope, incorrect password...
 Program received signal SIGSEGV, Segmentation fault.
 0x37634136 in ?? ()
 ```
+
+In the previous project, Rainfall, our strategy was to copy shellcode to the stack and jump to it (a classic stack-based buffer overflow). 
+
+Unfortunately, that we can't do that here since the program calls ```puts()``` instead of ```printf()``` (a vulnerable function).
+
+We're going to use ret2libc ("return-to-libc") instead, which will overwrite the EIP return address with a particular libc function address directly. 
+
+
 
 
 So finally our attack payload will be : “padding –> address of system() –> address of exit() –> /bin/sh“
