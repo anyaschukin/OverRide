@@ -21,10 +21,10 @@ Dump of assembler code for function main:
    
    0x080484db <+11>:	lea    0x1c(%esp),%ebx                  ; create char password
    
-   0x080484df <+15>:	mov    $0x0,%eax
-   0x080484e4 <+20>:	mov    $0x10,%edx
-   0x080484e9 <+25>:	mov    %ebx,%edi
-   0x080484eb <+27>:	mov    %edx,%ecx
+   0x080484df <+15>:	mov    $0x0,%eax                        ; load value of 0 in eax
+   0x080484e4 <+20>:	mov    $0x10,%edx                       ; load value of 16 in edx
+   0x080484e9 <+25>:	mov    %ebx,%edi                        ; point edi to char password
+   0x080484eb <+27>:	mov    %edx,%ecx                        ; number of repetitions (16 x 4 bytes)
    0x080484ed <+29>:	rep stos %eax,%es:(%edi)                ; normally a bzero() or memset()
    
    0x080484ef <+31>:	movl   $0x0,0x5c(%esp)
@@ -98,7 +98,7 @@ Let's take a closer look at ```verify_user_name()```.
    0x08048482 <+30>:	mov    $0x7,%ecx
    0x08048487 <+35>:	mov    %edx,%esi
    0x08048489 <+37>:	mov    %eax,%edi
-   0x0804848b <+39>:	repz cmpsb %es:(%edi),%ds:(%esi)          ; 
+   0x0804848b <+39>:	repz cmpsb %es:(%edi),%ds:(%esi)          ; compare paramter and "dat_wil"
    0x0804848d <+41>:	seta   %dl
    0x08048490 <+44>:	setb   %al
    0x08048493 <+47>:	mov    %edx,%ecx
