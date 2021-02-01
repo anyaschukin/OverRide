@@ -59,7 +59,7 @@ Dump of assembler code for function main:
    0x08048763 <+155>:	jmp    0x804881a <main+338>   ; jump to return(0);
 
 
-#### 
+#### !!!!!????????? ####
 
    0x08048768 <+160>:	nop
    0x08048769 <+161>:	lea    0x1c(%esp),%eax        ; int status
@@ -86,23 +86,35 @@ Dump of assembler code for function main:
    0x080487b3 <+235>:	call   0x8048500 <puts@plt>   ; puts("child is exiting...")
    0x080487b8 <+240>:	jmp    0x804881a <main+338>   ; jump to return(0)
 
-   0x080487ba <+242>:	movl   $0x0,0xc(%esp)
-   0x080487c2 <+250>:	movl   $0x2c,0x8(%esp)
-   0x080487ca <+258>:	mov    0xac(%esp),%eax
-   0x080487d1 <+265>:	mov    %eax,0x4(%esp)
-   0x080487d5 <+269>:	movl   $0x3,(%esp)
-   0x080487dc <+276>:	call   0x8048570 <ptrace@plt>
-   0x080487e1 <+281>:	mov    %eax,0xa8(%esp)
-   0x080487e8 <+288>:	cmpl   $0xb,0xa8(%esp)
-   0x080487f0 <+296>:	jne    0x8048768 <main+160>
-   0x080487f6 <+302>:	movl   $0x8048931,(%esp)
-   0x080487fd <+309>:	call   0x8048500 <puts@plt>
-   0x08048802 <+314>:	movl   $0x9,0x4(%esp)
-   0x0804880a <+322>:	mov    0xac(%esp),%eax
-   0x08048811 <+329>:	mov    %eax,(%esp)
-   0x08048814 <+332>:	call   0x8048520 <kill@plt>
+
+#### ptrace() child process exec()? ####
+
+   0x080487ba <+242>:	movl   $0x0,0xc(%esp)         ; load arg 4 - 0
+   0x080487c2 <+250>:	movl   $0x2c,0x8(%esp)        ; load arg 3 - 44
+   0x080487ca <+258>:	mov    0xac(%esp),%eax        ; child_pid
+   0x080487d1 <+265>:	mov    %eax,0x4(%esp)         ; load arg 2 - child_pid
+   0x080487d5 <+269>:	movl   $0x3,(%esp)            ; load arg 1 - 3 (PTRACE_PEEKUSR)
+   0x080487dc <+276>:	call   0x8048570 <ptrace@plt> ; ptrace(PTRACE_PEEKUSR, child_pid, 44, 0
+   0x080487e1 <+281>:	mov    %eax,0xa8(%esp)        ; load ptrace() return
+   0x080487e8 <+288>:	cmpl   $0xb,0xa8(%esp)        ; ptrace() return = 11?
+   0x080487f0 <+296>:	jne    0x8048768 <main+160>   ; jump back to start of loop
+
+
+#### Kill child process ####
+
+   0x080487f6 <+302>:	movl   $0x8048931,(%esp)      ; "no exec() for you"
+   0x080487fd <+309>:	call   0x8048500 <puts@plt>   ; puts("no exec() for you")
+   
+   0x08048802 <+314>:	movl   $0x9,0x4(%esp)         ; 9 (non-catchable, non-ignorable kill signal)
+   0x0804880a <+322>:	mov    0xac(%esp),%eax        ; child_pid
+   0x08048811 <+329>:	mov    %eax,(%esp)            ; child_pid
+   0x08048814 <+332>:	call   0x8048520 <kill@plt>   ; kill(child_pid, 9);
    0x08048819 <+337>:	nop
-   0x0804881a <+338>:	mov    $0x0,%eax
+
+
+### Return(0) ###
+
+   0x0804881a <+338>:	mov    $0x0,%eax              ; load (0) for return(0)
    0x0804881f <+343>:	lea    -0x8(%ebp),%esp
    0x08048822 <+346>:	pop    %ebx
    0x08048823 <+347>:	pop    %edi
