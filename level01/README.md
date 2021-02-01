@@ -129,7 +129,7 @@ PwBLgNa8p8MTKW57S7zxVAQCxnCpV8JqTTs9XEBv
 
 As user ```level02```, in ```/tmp```, create and compile ```level01_source.c```
 ```
-level02@OverRide:/tmp$ gcc -z execstack -fno-stack-protector level01_source.c -o level01_source
+level02@OverRide:/tmp$ gcc level01_source.c -o level01_source
 ```
 
 Edit permissions including suid, then move the binary to home directory.
