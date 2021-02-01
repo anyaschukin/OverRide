@@ -10,40 +10,40 @@ Dump of assembler code for function main:
    0x080486cb <+3>:	push   %edi
    0x080486cc <+4>:	push   %ebx
    0x080486cd <+5>:	and    $0xfffffff0,%esp
-   0x080486d0 <+8>:	sub    $0xb0,%esp                ; allocate 176 bytes on stack for local variables
+   0x080486d0 <+8>:	sub    $0xb0,%esp             ; allocate 176 bytes on stack for local variables
 
 
 #### Fork child process ####
 
-   0x080486d6 <+14>:	call   0x8048550 <fork@plt>      ; fork() child process
-   0x080486db <+19>:	mov    %eax,0xac(%esp)           ; int child_pid = fork()
+   0x080486d6 <+14>:	call   0x8048550 <fork@plt>   ; fork() child process
+   0x080486db <+19>:	mov    %eax,0xac(%esp)        ; int child_pid = fork()
 
 
 #### Initialize local variables ####
 
-   0x080486e2 <+26>:	lea    0x20(%esp),%ebx           ; char buffer[32]
+   0x080486e2 <+26>:	lea    0x20(%esp),%ebx        ; char buffer[32]
    
-   0x080486e6 <+30>:	mov    $0x0,%eax                 ; 0
-   0x080486eb <+35>:	mov    $0x20,%edx                ; 32
-   0x080486f0 <+40>:	mov    %ebx,%edi                 ; buffer[32]
+   0x080486e6 <+30>:	mov    $0x0,%eax              ; 0
+   0x080486eb <+35>:	mov    $0x20,%edx             ; 32
+   0x080486f0 <+40>:	mov    %ebx,%edi              ; buffer[32]
    0x080486f2 <+42>:	mov    %edx,%ecx
-   0x080486f4 <+44>:	rep stos %eax,%es:(%edi)         ; bzero(buffer, 32);
+   0x080486f4 <+44>:	rep stos %eax,%es:(%edi)      ; bzero(buffer, 32);
    
-   0x080486f6 <+46>:	movl   $0x0,0xa8(%esp)           ; int ptrace_ret = 0;
+   0x080486f6 <+46>:	movl   $0x0,0xa8(%esp)        ; int ptrace_ret = 0;
    
-   0x08048701 <+57>:	movl   $0x0,0x1c(%esp)           ; int status = 0;
+   0x08048701 <+57>:	movl   $0x0,0x1c(%esp)        ; int status = 0;
    
-   0x08048709 <+65>:	cmpl   $0x0,0xac(%esp)           ; child_pid = 0 ?
-   0x08048711 <+73>:	jne    0x8048769 <main+161>      ; jump past gets(buffer)
+   0x08048709 <+65>:	cmpl   $0x0,0xac(%esp)        ; child_pid = 0 ?
+   0x08048711 <+73>:	jne    0x8048769 <main+161>   ; jump past gets(buffer)
 
 
 #### Read stdin to buffer ####
 
-   0x08048713 <+75>:	movl   $0x1,0x4(%esp)            ; load arg 2 - 1
-   0x0804871b <+83>:	movl   $0x1,(%esp)               ; load arg 1 - 1
-   0x08048722 <+90>:	call   0x8048540 <prctl@plt>     ; prctl(1, 1);
+   0x08048713 <+75>:	movl   $0x1,0x4(%esp)         ; load arg 2 - 1
+   0x0804871b <+83>:	movl   $0x1,(%esp)            ; load arg 1 - 1
+   0x08048722 <+90>:	call   0x8048540 <prctl@plt>  ; prctl(1, 1);
    
-   0x08048727 <+95>:	movl   $0x0,0xc(%esp)            ; load arg 4 - 0
+   0x08048727 <+95>:	movl   $0x0,0xc(%esp)         ; load arg 4 - 0
    0x0804872f <+103>:	movl   $0x0,0x8(%esp)         ; load arg 3 - 0
    0x08048737 <+111>:	movl   $0x0,0x4(%esp)         ; load arg 2 - 0
    0x0804873f <+119>:	movl   $0x0,(%esp)            ; load arg 1 - 0
