@@ -32,10 +32,23 @@ First ```main()``` prompts for a username, reading from stdin with ```fgets()```
 Then ```main()``` prompts for a password, reading from stdin with ```fgets()```, and then calls ```verify_user_pass()```.
 
 In both cases, user input for username and password is compared with a hard value in memory and jumps to exit if not equal. 
+
 In ```verify_user_name()```, we see that the username must be "dat_wil".
+
 In ```verify_user_pass()```, we see that the password must be "admin".
 
+However, when we try these values the program still quits. 
+```
+level01@OverRide:~$ ./level01
+********* ADMIN LOGIN PROMPT *********
+Enter Username: dat_wil
+verifying username....
 
+Enter Password:
+admin
+nope, incorrect password...
+
+```
 
 
 Using our trusty [pattern generator and EIP offset tool](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/), we crash the program and find we can overwrite the EIP at offset 80.
