@@ -25,13 +25,17 @@ nope, incorrect username...
 ## Solution
 
 Let's take a deeper look at the program.
+See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level01/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-```
-level01@OverRide:~$ gdb -q level01
-(gdb) disas main
-   0x0804852d <+93>:	call   0x8048464 <verify_user_name>
-   0x08048580 <+176>:	call   0x80484a3 <verify_user_pass>
-```
+First ```main()``` prompts for a username, reading from stdin with ```fgets()```, and then calls ```verify_user_name()```.
+
+Then ```main()``` prompts for a password, reading from stdin with ```fgets()```, and then calls ```verify_user_pass()```.
+
+In both cases, user input for username and password is compared with a hard value in memory and jumps to exit if not equal. 
+In ```verify_user_name()```, we see that the username must be "dat_wil".
+In ```verify_user_pass()```, we see that the password must be "admin".
+
+
 
 
 Using our trusty [pattern generator and EIP offset tool](https://projects.jason-rush.com/tools/buffer-overflow-eip-offset-string-generator/), we crash the program and find we can overwrite the EIP at offset 80.
@@ -51,6 +55,9 @@ nope, incorrect password...
 Program received signal SIGSEGV, Segmentation fault.
 0x37634136 in ?? ()
 ```
+
+
+So finally our attack payload will be : “padding –> address of system() –> address of exit() –> /bin/sh“
 
 
 ### Build exploit
