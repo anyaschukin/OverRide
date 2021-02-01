@@ -23,7 +23,7 @@ Dump of assembler code for function main:
    0x080484e4 <+20>:	mov    $0x10,%edx
    0x080484e9 <+25>:	mov    %ebx,%edi
    0x080484eb <+27>:	mov    %edx,%ecx
-   0x080484ed <+29>:	rep stos %eax,%es:(%edi)
+   0x080484ed <+29>:	rep stos %eax,%es:(%edi)                ; normally a bzero() or memset()
    
    0x080484ef <+31>:	movl   $0x0,0x5c(%esp)
    0x080484f7 <+39>:	movl   $0x80486b8,(%esp)                ;  "********* ADMIN LOGIN PROMPT *********"
