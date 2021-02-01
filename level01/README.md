@@ -69,7 +69,7 @@ Program received signal SIGSEGV, Segmentation fault.
 0x37634136 in ?? ()
 ```
 
-In the previous project, Rainfall, our strategy was to copy shellcode to the stack and jump to it (a classic stack-based buffer overflow). 
+In the previous project, [Rainfall](https://github.com/anyashuka/Rainfall), our strategy was to copy shellcode to the stack and jump to it (a classic stack-based buffer overflow). 
 
 Unfortunately, that we can't do that here since the program calls ```puts()``` instead of ```printf()``` (a vulnerable function).
 
