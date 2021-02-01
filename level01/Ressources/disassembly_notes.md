@@ -17,8 +17,10 @@ Dump of assembler code for function main:
    0x080484d3 <+3>:	push   %edi
    0x080484d4 <+4>:	push   %ebx
    0x080484d5 <+5>:	and    $0xfffffff0,%esp
-   0x080484d8 <+8>:	sub    $0x60,%esp
-   0x080484db <+11>:	lea    0x1c(%esp),%ebx
+   0x080484d8 <+8>:	sub    $0x60,%esp                       ; allocates 96 bytes (0x60) on the stack
+   
+   0x080484db <+11>:	lea    0x1c(%esp),%ebx                  ; create char password
+   
    0x080484df <+15>:	mov    $0x0,%eax
    0x080484e4 <+20>:	mov    $0x10,%edx
    0x080484e9 <+25>:	mov    %ebx,%edi
