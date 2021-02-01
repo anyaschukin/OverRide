@@ -6,14 +6,13 @@ int	main(int argc, char **argv)
 {
 // Initialize variables
 	char	username[100];
+	bzero(&username, 12);
 	char	password[48];
+	bzero(&password, 5);
 	char	user_pass[112];
+	bzero(&user_pass, 12);
 	int		pass_len;
 	FILE	*file;
-
-	bzero(&username, 12);
-	bzero(&password, 5);
-	bzero(&user_pass, 12);
 
 // Read password from file
 	file = fopen("/home/users/level03/.pass", "r");
