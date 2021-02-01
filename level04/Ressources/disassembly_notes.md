@@ -37,7 +37,7 @@ Dump of assembler code for function main:
    0x08048711 <+73>:	jne    0x8048769 <main+161>   ; jump past gets(buffer)
 
 
-#### Read stdin to buffer ####
+#### Child return status to Parent process ####
 
    0x08048713 <+75>:	movl   $0x1,0x4(%esp)         ; load arg 2 - 1
    0x0804871b <+83>:	movl   $0x1,(%esp)            ; load arg 1 - 1
@@ -49,6 +49,9 @@ Dump of assembler code for function main:
    0x0804873f <+119>:	movl   $0x0,(%esp)            ; load arg 1 - 0
    0x08048746 <+126>:	call   0x8048570 <ptrace@plt> ; ptrace(0, 0, 0, 0);
 
+
+#### Read stdin to buffer ####
+
    0x0804874b <+131>:	movl   $0x8048903,(%esp)      ; "Give me some shellcode, k"
    0x08048752 <+138>:	call   0x8048500 <puts@plt>   ; puts("Give me some shellcode, k")
    
@@ -59,7 +62,7 @@ Dump of assembler code for function main:
    0x08048763 <+155>:	jmp    0x804881a <main+338>   ; jump to return(0);
 
 
-#### !!!!!????????? ####
+#### See child process exit status ####
 
    0x08048768 <+160>:	nop
    0x08048769 <+161>:	lea    0x1c(%esp),%eax        ; int status
@@ -70,7 +73,7 @@ Dump of assembler code for function main:
    0x08048779 <+177>:	mov    %eax,0xa0(%esp)        ; status
    0x08048780 <+184>:	mov    0xa0(%esp),%eax        ; status
    0x08048787 <+191>:	and    $0x7f,%eax             ; 127
-   0x0804878a <+194>:	test   %eax,%eax              ; status = 127?
+   0x0804878a <+194>:	test   %eax,%eax              ; status = 127? WIFEXITED
    0x0804878c <+196>:	je     0x80487ac <main+228>   ; jump to "child is exiting..."
 
    0x0804878e <+198>:	mov    0x1c(%esp),%eax        ; status
@@ -79,7 +82,7 @@ Dump of assembler code for function main:
    0x080487a0 <+216>:	and    $0x7f,%eax             ; 127
    0x080487a3 <+219>:	add    $0x1,%eax              ; 1
    0x080487a6 <+222>:	sar    %al                    ; divide / 2
-   0x080487a8 <+224>:	test   %al,%al                ; if (((status & 127) + 1) / 2) > 0
+   0x080487a8 <+224>:	test   %al,%al                ; (((status & 127) + 1) / 2) > 0 ? WIFSIGNALED
    0x080487aa <+226>:	jle    0x80487ba <main+242>   ; jump past "child is exiting..."
 
    0x080487ac <+228>:	movl   $0x804891d,(%esp)      ; "child is exiting..."
@@ -96,7 +99,7 @@ Dump of assembler code for function main:
    0x080487d5 <+269>:	movl   $0x3,(%esp)            ; load arg 1 - 3 (PTRACE_PEEKUSR)
    0x080487dc <+276>:	call   0x8048570 <ptrace@plt> ; ptrace(PTRACE_PEEKUSR, child_pid, 44, 0
    0x080487e1 <+281>:	mov    %eax,0xa8(%esp)        ; load ptrace() return
-   0x080487e8 <+288>:	cmpl   $0xb,0xa8(%esp)        ; ptrace() return = 11?
+   0x080487e8 <+288>:	cmpl   $0xb,0xa8(%esp)        ; ptrace() return = 11 (exec syscall)?
    0x080487f0 <+296>:	jne    0x8048768 <main+160>   ; jump back to start of loop
 
 
@@ -112,7 +115,7 @@ Dump of assembler code for function main:
    0x08048819 <+337>:	nop
 
 
-### Return(0) ###
+#### Return(0) ####
 
    0x0804881a <+338>:	mov    $0x0,%eax              ; load (0) for return(0)
    0x0804881f <+343>:	lea    -0x8(%ebp),%esp
