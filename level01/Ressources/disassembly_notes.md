@@ -37,7 +37,7 @@ Dump of assembler code for function main:
    0x08048515 <+69>:	mov    %eax,0x8(%esp)                   ; set argument 3
    0x08048519 <+73>:	movl   $0x100,0x4(%esp)                 ; set argument 2, value 256
    0x08048521 <+81>:	movl   $0x804a040,(%esp)                ; set argument 1, <a_user_name>:	 ""
-   0x08048528 <+88>:	call   0x8048370 <fgets@plt>            ; fgets(esp, esp+4, esp+8) ... fgets(a_user_name, user input)
+   0x08048528 <+88>:	call   0x8048370 <fgets@plt>            ; fgets(esp, esp+4, esp+8) ... fgets(a_user_name, 256, user input)
    0x0804852d <+93>:	call   0x8048464 <verify_user_name>
    
    0x08048532 <+98>:	mov    %eax,0x5c(%esp)
