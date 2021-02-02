@@ -155,7 +155,7 @@ Dump of assembler code for function auth:
    0x080487a6 <+94>:	movl   $0x0,0x4(%esp)                   ; load arg 2 - 0
    0x080487ae <+102>:	movl   $0x0,(%esp)                      ; load arg 1 - 0
    0x080487b5 <+109>:	call   0x80485f0 <ptrace@plt>           ; ptrace(0, 0, 1, 0)
-   0x080487ba <+114>:	cmp    $0xffffffff,%eax                 ; ptrace() return -1 ?
+   0x080487ba <+114>:	cmp    $0xffffffff,%eax                 ; ptrace() return -1 ? <- gdb break point, set $eax=0
    0x080487bd <+117>:	jne    0x80487ed <auth+165>             ; jump past "!! TAMPERING DETECTED !!"
 
 
@@ -236,7 +236,7 @@ Dump of assembler code for function auth:
 #### Validate Serial, return 0 or 1 ####
 
    0x08048863 <+283>:	mov    0xc(%ebp),%eax                   ; serial
-   0x08048866 <+286>:	cmp    -0x10(%ebp),%eax                 ; serial = nb ?
+   0x08048866 <+286>:	cmp    -0x10(%ebp),%eax                 ; serial = nb ? <- gdb break point, print hash
    0x08048869 <+289>:	je     0x8048872 <auth+298>             ; jump to return(0)
 
    0x0804886b <+291>:	mov    $0x1,%eax                        ; load (1) for return(1)
