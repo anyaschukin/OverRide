@@ -152,43 +152,55 @@ Dump of assembler code for function auth:
    0x08048796 <+78>:	movl   $0x0,0xc(%esp)                   ; load arg 4 - 0
    0x0804879e <+86>:	movl   $0x1,0x8(%esp)                   ; load arg 3 - 1
    0x080487a6 <+94>:	movl   $0x0,0x4(%esp)                   ; load arg 2 - 0
-   0x080487ae <+102>:	movl   $0x0,(%esp)                   ; load arg 1 - 0
-   0x080487b5 <+109>:	call   0x80485f0 <ptrace@plt>        ; ptrace(0, 0, 1, 0)
-   0x080487ba <+114>:	cmp    $0xffffffff,%eax              ; ptrace() return -1 ?
-   0x080487bd <+117>:	jne    0x80487ed <auth+165>          ; jump past "!! TAMPERING DETECTED !!"
+   0x080487ae <+102>:	movl   $0x0,(%esp)                      ; load arg 1 - 0
+   0x080487b5 <+109>:	call   0x80485f0 <ptrace@plt>           ; ptrace(0, 0, 1, 0)
+   0x080487ba <+114>:	cmp    $0xffffffff,%eax                 ; ptrace() return -1 ?
+   0x080487bd <+117>:	jne    0x80487ed <auth+165>             ; jump past "!! TAMPERING DETECTED !!"
 
 
 #### Print TAMPERING DETECTED, return(1) ####
 
-   0x080487bf <+119>:	movl   $0x8048a68,(%esp)             ; "\033[32m.", '-' <repeats 27 times>, "."
-   0x080487c6 <+126>:	call   0x8048590 <puts@plt>          ; puts("\033[32m.----------------------------.");
-   0x080487cb <+131>:	movl   $0x8048a8c,(%esp)             ; "\033[31m| !! TAMPERING DETECTED !!  |"
-   0x080487d2 <+138>:	call   0x8048590 <puts@plt>          ; puts("\033[31m| !! TAMPERING DETECTED !!  |");
-   0x080487d7 <+143>:	movl   $0x8048ab0,(%esp)             ; "\033[32m'", '-' <repeats 27 times>, "'"
-   0x080487de <+150>:	call   0x8048590 <puts@plt>          ; puts("\033[32m'----------------------------'");
+   0x080487bf <+119>:	movl   $0x8048a68,(%esp)                ; "\033[32m.", '-' <repeats 27 times>, "."
+   0x080487c6 <+126>:	call   0x8048590 <puts@plt>             ; puts("\033[32m.----------------------------.");
+   0x080487cb <+131>:	movl   $0x8048a8c,(%esp)                ; "\033[31m| !! TAMPERING DETECTED !!  |"
+   0x080487d2 <+138>:	call   0x8048590 <puts@plt>             ; puts("\033[31m| !! TAMPERING DETECTED !!  |");
+   0x080487d7 <+143>:	movl   $0x8048ab0,(%esp)                ; "\033[32m'", '-' <repeats 27 times>, "'"
+   0x080487de <+150>:	call   0x8048590 <puts@plt>             ; puts("\033[32m'----------------------------'");
 
-   0x080487e3 <+155>:	mov    $0x1,%eax                     ; load (1) for return(1)
-   0x080487e8 <+160>:	jmp    0x8048877 <auth+303>          ; jump to return(1)
-
-
+   0x080487e3 <+155>:	mov    $0x1,%eax                        ; load (1) for return(1)
+   0x080487e8 <+160>:	jmp    0x8048877 <auth+303>             ; jump to return(1)
 
 
-   0x080487ed <+165>:	mov    0x8(%ebp),%eax
-   0x080487f0 <+168>:	add    $0x3,%eax
-   0x080487f3 <+171>:	movzbl (%eax),%eax
-   0x080487f6 <+174>:	movsbl %al,%eax
-   0x080487f9 <+177>:	xor    $0x1337,%eax
-   0x080487fe <+182>:	add    $0x5eeded,%eax
-   0x08048803 <+187>:	mov    %eax,-0x10(%ebp)
-   0x08048806 <+190>:	movl   $0x0,-0x14(%ebp)
-   0x0804880d <+197>:	jmp    0x804885b <auth+275>
-   0x0804880f <+199>:	mov    -0x14(%ebp),%eax
-   0x08048812 <+202>:	add    0x8(%ebp),%eax
-   0x08048815 <+205>:	movzbl (%eax),%eax
-   0x08048818 <+208>:	cmp    $0x1f,%al
-   0x0804881a <+210>:	jg     0x8048823 <auth+219>
-   0x0804881c <+212>:	mov    $0x1,%eax
-   0x08048821 <+217>:	jmp    0x8048877 <auth+303>
+#### Seed Hash ####
+
+   0x080487ed <+165>:	mov    0x8(%ebp),%eax                   ; login
+   0x080487f0 <+168>:	add    $0x3,%eax                        ; login[3]
+   0x080487f3 <+171>:	movzbl (%eax),%eax                      ; *login[3]
+   0x080487f6 <+174>:	movsbl %al,%eax                         ; last 8 bits of eax
+   0x080487f9 <+177>:	xor    $0x1337,%eax                     ; login[3] ^ 0x1337
+   0x080487fe <+182>:	add    $0x5eeded,%eax                   ; (login[3] ^ 0x1337) + 0x5eeded
+   0x08048803 <+187>:	mov    %eax,-0x10(%ebp)                 ; int nb = (login[3] ^ 4919) + 6221293
+
+
+#### Initialize loop ####
+
+   0x08048806 <+190>:	movl   $0x0,-0x14(%ebp)                 ; int i = 0;
+   0x0804880d <+197>:	jmp    0x804885b <auth+275>             ; jump into while (i < len) loop
+
+
+#### Check login is printable ####
+
+   0x0804880f <+199>:	mov    -0x14(%ebp),%eax                 ; i
+   0x08048812 <+202>:	add    0x8(%ebp),%eax                   ; login[i]
+   0x08048815 <+205>:	movzbl (%eax),%eax                      ; *login[i]
+   0x08048818 <+208>:	cmp    $0x1f,%al                        ; login[i] <= 31 ? (ascii printable)
+   0x0804881a <+210>:	jg     0x8048823 <auth+219>             ; jump past return(1)
+   0x0804881c <+212>:	mov    $0x1,%eax                        ; load (1) for return(1)
+   0x08048821 <+217>:	jmp    0x8048877 <auth+303>             ; jump to return(1)
+
+
+
+
    0x08048823 <+219>:	mov    -0x14(%ebp),%eax
    0x08048826 <+222>:	add    0x8(%ebp),%eax
    0x08048829 <+225>:	movzbl (%eax),%eax
