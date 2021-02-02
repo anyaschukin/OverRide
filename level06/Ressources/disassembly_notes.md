@@ -18,12 +18,12 @@ Dump of assembler code for function main:
    0x08048889 <+16>:	mov    %gs:0x14,%eax                    ; canary value
    0x0804888f <+22>:	mov    %eax,0x4c(%esp)                  ; store canary value at end of stack
 
-   0x08048893 <+26>:	xor    %eax,%eax                        
-   0x08048895 <+28>:	push   %eax
-   0x08048896 <+29>:	xor    %eax,%eax
-   0x08048898 <+31>:	je     0x804889d <main+36>
-   0x0804889a <+33>:	add    $0x4,%esp
-   0x0804889d <+36>:	pop    %eax
+   0x08048893 <+26>:	xor    %eax,%eax                        ; canary value
+   0x08048895 <+28>:	push   %eax                             ; save canary value
+   0x08048896 <+29>:	xor    %eax,%eax                        ; canary value
+   0x08048898 <+31>:	je     0x804889d <main+36>              ; jump past add 4 to esp
+   0x0804889a <+33>:	add    $0x4,%esp                        ; add 4 to esp
+   0x0804889d <+36>:	pop    %eax                             ; pop canary value
 
 
 #### Print Login prompt ####
