@@ -7,7 +7,7 @@ Dump of assembler code for function main:
    0x0804885a <+0>:	push   %ebp
    0x0804885b <+1>:	mov    %esp,%ebp
    
-   0x0804885d <+3>:	and    $0xfffffff0,%esp                ; align the stack 
+   0x0804885d <+3>:	and    $0xfffffff0,%esp                         ; align the stack 
    0x08048860 <+6>:	sub    $0x20,%esp
    0x08048863 <+9>:	push   %eax
    0x08048864 <+10>:	xor    %eax,%eax                                ; sets eax to zero 
