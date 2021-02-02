@@ -29,7 +29,15 @@ level06@OverRide:~$
 
 ## Solution
 
+### main() overview
 
+First ```main()``` prompts user for *Login* and *Serial*, reading from stdin.
+
+Next ```main()``` calls ```auth()``` which performs a hashing algorithm on *Login*, then compares the computed hash with *Serial*.
+
+Finally, if ```auth()``` validates the *Login* and *Serial*, ```system()``` opens a shell.
+
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level06/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ### Build exploit
 
