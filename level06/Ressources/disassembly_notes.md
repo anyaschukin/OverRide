@@ -123,7 +123,8 @@ Dump of assembler code for function auth:
    0x08048761 <+25>:	add    0x8(%ebp),%eax                   ; login
    0x08048764 <+28>:	movb   $0x0,(%eax)                      ; login[strcspn(login, "\n")] = 0;
 
-#### len login ####
+
+#### measure login length ####
 
    0x08048767 <+31>:	movl   $0x20,0x4(%esp)                  ; load arg 2 - 32
    0x0804876f <+39>:	mov    0x8(%ebp),%eax                   ; login
@@ -188,7 +189,7 @@ Dump of assembler code for function auth:
    0x0804880d <+197>:	jmp    0x804885b <auth+275>             ; jump into while (i < len) loop
 
 
-#### Check login is printable ####
+#### Check login[i] is printable ####
 
    0x0804880f <+199>:	mov    -0x14(%ebp),%eax                 ; i
    0x08048812 <+202>:	add    0x8(%ebp),%eax                   ; login[i]
@@ -199,37 +200,49 @@ Dump of assembler code for function auth:
    0x08048821 <+217>:	jmp    0x8048877 <auth+303>             ; jump to return(1)
 
 
+#### Hashing Algo ####
+
+   0x08048823 <+219>:	mov    -0x14(%ebp),%eax                 ; i
+   0x08048826 <+222>:	add    0x8(%ebp),%eax                   ; login[i]
+   0x08048829 <+225>:	movzbl (%eax),%eax                      ; *login[i]
+   0x0804882c <+228>:	movsbl %al,%eax                         ; last 8 bits of eax
+   0x0804882f <+231>:	mov    %eax,%ecx                        ; store login[i]
+
+   0x08048831 <+233>:	xor    -0x10(%ebp),%ecx                 ; login[i] ^ nb
+   0x08048834 <+236>:	mov    $0x88233b2b,%edx                 ; 0x88233b2b
+   0x08048839 <+241>:	mov    %ecx,%eax                        ; load login[i] ^ nb
+   0x0804883b <+243>:	mul    %edx                             ; (login[i] ^ nb) * 0x88233b2b
+   0x0804883d <+245>:	mov    %ecx,%eax                        ; c = a
+   0x0804883f <+247>:	sub    %edx,%eax                        ; a -= d
+   0x08048841 <+249>:	shr    %eax                             ; a /= 2
+   0x08048843 <+251>:	add    %edx,%eax                        ; a += d
+   0x08048845 <+253>:	shr    $0xa,%eax                        ; a /= 1024 (2 to the power of 0xa)
+   0x08048848 <+256>:	imul   $0x539,%eax,%eax                 ; a *= 0x539
+   0x0804884e <+262>:	mov    %ecx,%edx                        ; d = c
+   0x08048850 <+264>:	sub    %eax,%edx                        ; d -= a
+   0x08048852 <+266>:	mov    %edx,%eax                        ; a = d
+   0x08048854 <+268>:	add    %eax,-0x10(%ebp)                 ; nb += a
 
 
-   0x08048823 <+219>:	mov    -0x14(%ebp),%eax
-   0x08048826 <+222>:	add    0x8(%ebp),%eax
-   0x08048829 <+225>:	movzbl (%eax),%eax
-   0x0804882c <+228>:	movsbl %al,%eax
-   0x0804882f <+231>:	mov    %eax,%ecx
-   0x08048831 <+233>:	xor    -0x10(%ebp),%ecx
-   0x08048834 <+236>:	mov    $0x88233b2b,%edx
-   0x08048839 <+241>:	mov    %ecx,%eax
-   0x0804883b <+243>:	mul    %edx
-   0x0804883d <+245>:	mov    %ecx,%eax
-   0x0804883f <+247>:	sub    %edx,%eax
-   0x08048841 <+249>:	shr    %eax
-   0x08048843 <+251>:	add    %edx,%eax
-   0x08048845 <+253>:	shr    $0xa,%eax
-   0x08048848 <+256>:	imul   $0x539,%eax,%eax
-   0x0804884e <+262>:	mov    %ecx,%edx
-   0x08048850 <+264>:	sub    %eax,%edx
-   0x08048852 <+266>:	mov    %edx,%eax
-   0x08048854 <+268>:	add    %eax,-0x10(%ebp)
-   0x08048857 <+271>:	addl   $0x1,-0x14(%ebp)
-   0x0804885b <+275>:	mov    -0x14(%ebp),%eax
-   0x0804885e <+278>:	cmp    -0xc(%ebp),%eax
-   0x08048861 <+281>:	jl     0x804880f <auth+199>
-   0x08048863 <+283>:	mov    0xc(%ebp),%eax
-   0x08048866 <+286>:	cmp    -0x10(%ebp),%eax
-   0x08048869 <+289>:	je     0x8048872 <auth+298>
-   0x0804886b <+291>:	mov    $0x1,%eax
-   0x08048870 <+296>:	jmp    0x8048877 <auth+303>
-   0x08048872 <+298>:	mov    $0x0,%eax
+#### Iterate while loop ####
+
+   0x08048857 <+271>:	addl   $0x1,-0x14(%ebp)                 ; i++; iterate while loop
+
+   0x0804885b <+275>:	mov    -0x14(%ebp),%eax                 ; i
+   0x0804885e <+278>:	cmp    -0xc(%ebp),%eax                  ; strnlen(login)
+   0x08048861 <+281>:	jl     0x804880f <auth+199>             ; jump back to start of while (i < len) loop
+
+
+#### Validate Serial, return 0 or 1 ####
+
+   0x08048863 <+283>:	mov    0xc(%ebp),%eax                   ; serial
+   0x08048866 <+286>:	cmp    -0x10(%ebp),%eax                 ; serial = nb ?
+   0x08048869 <+289>:	je     0x8048872 <auth+298>             ; jump to return(0)
+
+   0x0804886b <+291>:	mov    $0x1,%eax                        ; load (1) for return(1)
+   0x08048870 <+296>:	jmp    0x8048877 <auth+303>             ; jump to return(1)
+
+   0x08048872 <+298>:	mov    $0x0,%eax                        ; load (0) for return(0)
    0x08048877 <+303>:	leave
    0x08048878 <+304>:	ret
 End of assembler dump.
