@@ -126,15 +126,16 @@ Dump of assembler code for function decrypt:
    0x080486b4 <+84>:	mov    %ecx,%eax
    0x080486b6 <+86>:	not    %eax
    0x080486b8 <+88>:	sub    $0x1,%eax
-   0x080486bb <+91>:	mov    %eax,-0x24(%ebp)
-   0x080486be <+94>:	movl   $0x0,-0x28(%ebp)
+   0x080486bb <+91>:	mov    %eax,-0x24(%ebp)                            ; size_t len = strlen("Q}|u`sfg~sf{}|a3")
+   0x080486be <+94>:	movl   $0x0,-0x28(%ebp)                            ; int i = 0
    0x080486c5 <+101>:	jmp    0x80486e5 <decrypt+133>
    
-   0x080486c7 <+103>:	lea    -0x1d(%ebp),%eax
-   0x080486ca <+106>:	add    -0x28(%ebp),%eax
-   0x080486cd <+109>:	movzbl (%eax),%eax
+   0x080486c7 <+103>:	lea    -0x1d(%ebp),%eax                         ; "Q}|u`sfg~sf{}|a3"
+   0x080486ca <+106>:	add    -0x28(%ebp),%eax                         ; 32 bytes? index?
+   0x080486cd <+109>:	movzbl (%eax),%eax                              ; return string[index] ... return ("Q}|u`sfg~sf{}|a3"[index])
    0x080486d0 <+112>:	mov    %eax,%edx
-   0x080486d2 <+114>:	mov    0x8(%ebp),%eax
+   
+   0x080486d2 <+114>:	mov    0x8(%ebp),%eax                           ; input?
    0x080486d5 <+117>:	xor    %edx,%eax
    0x080486d7 <+119>:	mov    %eax,%edx
    0x080486d9 <+121>:	lea    -0x1d(%ebp),%eax
