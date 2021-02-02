@@ -1,13 +1,6 @@
 # Disassembly
 
 ```
-push   %ebp
-mov    %esp,%ebp
-```
-Establishes a new stack frame within the callee, while preserving the stack frame of the caller. A stack frame allows consistent access to passed parameters and local variables using fixed offsets relative to EBP anywhere in the function, while ESP is free to continue being modified as needed while the function is running. 
-
-Let's take a deeper look at ```main()```.
-```
 (gdb) disas main
 Dump of assembler code for function main:
    0x0804885a <+0>:	push   %ebp
@@ -43,6 +36,7 @@ Dump of assembler code for function main:
    0x080488d2 <+120>:	mov    %eax,(%esp)
    0x080488d5 <+123>:	call   0x8048747 <test>
    0x080488da <+128>:	mov    $0x0,%eax
+   
    0x080488df <+133>:	leave
    0x080488e0 <+134>:	ret
 ```
