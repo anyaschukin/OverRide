@@ -92,37 +92,44 @@ Here's a deeper look into ```decrypt()```.
 ```
 (gdb) disas decrypt
 Dump of assembler code for function decrypt:
+
    0x08048660 <+0>:	push   %ebp
    0x08048661 <+1>:	mov    %esp,%ebp
+   
    0x08048663 <+3>:	push   %edi
    0x08048664 <+4>:	push   %esi
-   0x08048665 <+5>:	sub    $0x40,%esp
-   0x08048668 <+8>:	mov    %gs:0x14,%eax
-   0x0804866e <+14>:	mov    %eax,-0xc(%ebp)
-   0x08048671 <+17>:	xor    %eax,%eax
-   0x08048673 <+19>:	movl   $0x757c7d51,-0x1d(%ebp)
-   0x0804867a <+26>:	movl   $0x67667360,-0x19(%ebp)
-   0x08048681 <+33>:	movl   $0x7b66737e,-0x15(%ebp)
-   0x08048688 <+40>:	movl   $0x33617c7d,-0x11(%ebp)
-   0x0804868f <+47>:	movb   $0x0,-0xd(%ebp)
+   0x08048665 <+5>:	sub    $0x40,%esp                                  ; allocates 64 bytes on stack for local variables
+   
+   0x08048668 <+8>:	mov    %gs:0x14,%eax                               ; read 4 bytes into eax from memory at address gs:0x14
+   0x0804866e <+14>:	mov    %eax,-0xc(%ebp)                             ; local variable esp-0xc
+   0x08048671 <+17>:	xor    %eax,%eax                                   ; sets eax to zero (the most efficient way)
+   
+   0x08048673 <+19>:	movl   $0x757c7d51,-0x1d(%ebp)                     ; "Q}|u`sfg~sf{}|a"
+   0x0804867a <+26>:	movl   $0x67667360,-0x19(%ebp)                     ; "`sfg~sf{}|a"
+   0x08048681 <+33>:	movl   $0x7b66737e,-0x15(%ebp)                     ; "~sf{}|a"
+   0x08048688 <+40>:	movl   $0x33617c7d,-0x11(%ebp)                     ;  "}|a"
+   0x0804868f <+47>:	movb   $0x0,-0xd(%ebp)                             ; "\0"
    0x08048693 <+51>:	push   %eax
-   0x08048694 <+52>:	xor    %eax,%eax
+   
+   0x08048694 <+52>:	xor    %eax,%eax                                   ; sets eax to zero
    0x08048696 <+54>:	je     0x804869b <decrypt+59>
-   0x08048698 <+56>:	add    $0x4,%esp
+   
+   0x08048698 <+56>:	add    $0x4,%esp                                   ; add 4 empty bytes "" to esp ?
    0x0804869b <+59>:	pop    %eax
-   0x0804869c <+60>:	lea    -0x1d(%ebp),%eax
-   0x0804869f <+63>:	movl   $0xffffffff,-0x2c(%ebp)
-   0x080486a6 <+70>:	mov    %eax,%edx
+   0x0804869c <+60>:	lea    -0x1d(%ebp),%eax                            ; load "Q}|u`sfg~sf{}|a3" into eax
+   0x0804869f <+63>:	movl   $0xffffffff,-0x2c(%ebp)                     ; alignment?
+   0x080486a6 <+70>:	mov    %eax,%edx                                   ; load 0xffffffff into edx
    0x080486a8 <+72>:	mov    $0x0,%eax
-   0x080486ad <+77>:	mov    -0x2c(%ebp),%ecx
-   0x080486b0 <+80>:	mov    %edx,%edi
-   0x080486b2 <+82>:	repnz scas %es:(%edi),%al
+   0x080486ad <+77>:	mov    -0x2c(%ebp),%ecx                            ; load 0xffffffff into ecx
+   0x080486b0 <+80>:	mov    %edx,%edi                                   ; load "Q}|u`sfg~sf{}|a3" into edi
+   0x080486b2 <+82>:	repnz scas %es:(%edi),%al                          ; strlen("Q}|u`sfg~sf{}|a3")
    0x080486b4 <+84>:	mov    %ecx,%eax
    0x080486b6 <+86>:	not    %eax
    0x080486b8 <+88>:	sub    $0x1,%eax
    0x080486bb <+91>:	mov    %eax,-0x24(%ebp)
    0x080486be <+94>:	movl   $0x0,-0x28(%ebp)
    0x080486c5 <+101>:	jmp    0x80486e5 <decrypt+133>
+   
    0x080486c7 <+103>:	lea    -0x1d(%ebp),%eax
    0x080486ca <+106>:	add    -0x28(%ebp),%eax
    0x080486cd <+109>:	movzbl (%eax),%eax
@@ -137,26 +144,31 @@ Dump of assembler code for function decrypt:
    0x080486e5 <+133>:	mov    -0x28(%ebp),%eax
    0x080486e8 <+136>:	cmp    -0x24(%ebp),%eax
    0x080486eb <+139>:	jb     0x80486c7 <decrypt+103>
-   0x080486ed <+141>:	lea    -0x1d(%ebp),%eax
+   
+   0x080486ed <+141>:	lea    -0x1d(%ebp),%eax                            ; buf
    0x080486f0 <+144>:	mov    %eax,%edx
-   0x080486f2 <+146>:	mov    $0x80489c3,%eax
-   0x080486f7 <+151>:	mov    $0x11,%ecx
+   0x080486f2 <+146>:	mov    $0x80489c3,%eax                             ; "Congratulations!"
+   0x080486f7 <+151>:	mov    $0x11,%ecx                                  ; value of 17
    0x080486fc <+156>:	mov    %edx,%esi
    0x080486fe <+158>:	mov    %eax,%edi
-   0x08048700 <+160>:	repz cmpsb %es:(%edi),%ds:(%esi)
-   0x08048702 <+162>:	seta   %dl
-   0x08048705 <+165>:	setb   %al
+   0x08048700 <+160>:	repz cmpsb %es:(%edi),%ds:(%esi)                   ; strncmp - loops comparing values in ES:EDI and DS:ESI, continues until ECX is zero or a mismatching byte is found
+   0x08048702 <+162>:	seta   %dl                                         ; sets DL if previous comparison results in >
+   0x08048705 <+165>:	setb   %al                                         ; sets AL if previous comparison results in <
    0x08048708 <+168>:	mov    %edx,%ecx
    0x0804870a <+170>:	sub    %al,%cl
    0x0804870c <+172>:	mov    %ecx,%eax
    0x0804870e <+174>:	movsbl %al,%eax
-   0x08048711 <+177>:	test   %eax,%eax
+   0x08048711 <+177>:	test   %eax,%eax                                   ; if (strncmp(buf, "Congratulations",17) == 0)
    0x08048713 <+179>:	jne    0x8048723 <decrypt+195>
-   0x08048715 <+181>:	movl   $0x80489d4,(%esp)
-   0x0804871c <+188>:	call   0x80484e0 <system@plt>
+   
+   0x08048715 <+181>:	movl   $0x80489d4,(%esp)                           ; "/bin/sh"
+   0x0804871c <+188>:	call   0x80484e0 <system@plt>                      ; system("/bin/sh")
+   
    0x08048721 <+193>:	jmp    0x804872f <decrypt+207>
+   
    0x08048723 <+195>:	movl   $0x80489dc,(%esp)
-   0x0804872a <+202>:	call   0x80484d0 <puts@plt>
+   0x0804872a <+202>:	call   0x80484d0 <puts@plt>                        ; puts("\nInvalid Password")
+   
    0x0804872f <+207>:	mov    -0xc(%ebp),%esi
    0x08048732 <+210>:	xor    %gs:0x14,%esi
    0x08048739 <+217>:	je     0x8048740 <decrypt+224>
