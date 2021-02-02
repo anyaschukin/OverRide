@@ -46,3 +46,42 @@ Dump of assembler code for function main:
    0x080488df <+133>:	leave
    0x080488e0 <+134>:	ret
 ```
+
+```
+(gdb) disas test
+Dump of assembler code for function test:
+   0x08048747 <+0>:	push   %ebp
+   0x08048748 <+1>:	mov    %esp,%ebp
+   0x0804874a <+3>:	sub    $0x28,%esp                                  ; allocates 40 bytes on stack for local variables
+   
+   0x0804874d <+6>:	mov    0x8(%ebp),%eax                              ; ebp+8, DWORD PTR
+   0x08048750 <+9>:	mov    0xc(%ebp),%edx                              ; ebp+0xc, DWORD PTR
+   0x08048753 <+12>:	mov    %edx,%ecx
+   0x08048755 <+14>:	sub    %eax,%ecx                                   ; 322424845 - input
+   0x08048757 <+16>:	mov    %ecx,%eax
+   0x08048759 <+18>:	mov    %eax,-0xc(%ebp)
+   0x0804875c <+21>:	cmpl   $0x15,-0xc(%ebp)                            ; if number > 21
+   0x08048760 <+25>:	ja     0x804884a <test+259>                        ; jump if above
+   
+   0x08048766 <+31>:	mov    -0xc(%ebp),%eax
+   0x08048769 <+34>:	shl    $0x2,%eax                                   ; shift
+   0x0804876c <+37>:	add    $0x80489f0,%eax
+   0x08048771 <+42>:	mov    (%eax),%eax
+   0x08048773 <+44>:	jmp    *%eax
+   0x08048775 <+46>:	mov    -0xc(%ebp),%eax
+   0x08048778 <+49>:	mov    %eax,(%esp)
+   0x0804877b <+52>:	call   0x8048660 <decrypt>
+   0x08048780 <+57>:	jmp    0x8048858 <test+273>
+   0x08048785 <+62>:	mov    -0xc(%ebp),%eax
+   0x08048788 <+65>:	mov    %eax,(%esp)
+   0x0804878b <+68>:	call   0x8048660 <decrypt>
+   0x08048790 <+73>:	jmp    0x8048858 <test+273>
+[...]
+   0x0804884a <+259>:	call   0x8048520 <rand@plt>                     ; number = rand()
+   0x0804884f <+264>:	mov    %eax,(%esp)
+   0x08048852 <+267>:	call   0x8048660 <decrypt>
+   
+   0x08048857 <+272>:	nop
+   0x08048858 <+273>:	leave
+   0x08048859 <+274>:	ret
+```
