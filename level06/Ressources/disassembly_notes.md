@@ -15,10 +15,10 @@ Dump of assembler code for function main:
    0x08048882 <+9>:	mov    0xc(%ebp),%eax                   ; argv[0]
    0x08048885 <+12>:	mov    %eax,0x1c(%esp)                  ; store argv[0] at esp+0x1c
 
-   0x08048889 <+16>:	mov    %gs:0x14,%eax                    ; 20
-   0x0804888f <+22>:	mov    %eax,0x4c(%esp)                  ; int var1 = 20
+   0x08048889 <+16>:	mov    %gs:0x14,%eax                    ; canary value
+   0x0804888f <+22>:	mov    %eax,0x4c(%esp)                  ; store canary value at end of stack
 
-   0x08048893 <+26>:	xor    %eax,%eax
+   0x08048893 <+26>:	xor    %eax,%eax                        
    0x08048895 <+28>:	push   %eax
    0x08048896 <+29>:	xor    %eax,%eax
    0x08048898 <+31>:	je     0x804889d <main+36>
@@ -91,9 +91,12 @@ Dump of assembler code for function main:
    0x08048962 <+233>:	mov    $0x0,%eax                        ; load (0) for return(0)
    0x08048967 <+238>:	jmp    0x804896e <main+245>             ; jump to return(0)
 
+
+#### Return ####
+
    0x08048969 <+240>:	mov    $0x1,%eax                        ; load (1) for return(1)
-   0x0804896e <+245>:	mov    0x4c(%esp),%edx
-   0x08048972 <+249>:	xor    %gs:0x14,%edx                    ; var1
+   0x0804896e <+245>:	mov    0x4c(%esp),%edx                  ; stored canary value
+   0x08048972 <+249>:	xor    %gs:0x14,%edx                    ; canary value correct?
    0x08048979 <+256>:	je     0x8048980 <main+263>             ; jump to return
    0x0804897b <+258>:	call   0x8048580 <__stack_chk_fail@plt> ; kill function if stack overflow
    0x08048980 <+263>:	leave
