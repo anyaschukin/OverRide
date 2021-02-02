@@ -39,7 +39,7 @@ Dump of assembler code for function main:
    
    0x080488c6 <+108>:	mov    0x1c(%esp),%eax                          ; return of scanf: input
    0x080488ca <+112>:	movl   $0x1337d00d,0x4(%esp)                    ; set argument 2, esp+4: value 322424845
-   0x080488d2 <+120>:	mov    %eax,(%esp)                              ; set argument 1, esp: unput
+   0x080488d2 <+120>:	mov    %eax,(%esp)                              ; set argument 1, esp: input
    0x080488d5 <+123>:	call   0x8048747 <test>                         ; test(number, 322424845);
    0x080488da <+128>:	mov    $0x0,%eax
    
