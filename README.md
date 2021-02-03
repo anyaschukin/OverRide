@@ -21,11 +21,11 @@ For each level:
 
 * Level 3 - 
 
-* Level 4 - 
+* Level 4 - gets() stack overflow + Return-to-libc attack
 
 * Level 5 - 
 
-* Level 6 - 
+* Level 6 - Hash value discoverable with gdb
 
 * Level 7 - 
 

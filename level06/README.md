@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-
+Hash value discoverable with gdb
 
 ## Context
 
@@ -43,9 +43,9 @@ See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level06/
 
 Using gdb we can look for the computed hash value (*Serial*) for a given *Login*.
 
-However, we can't go directly to the computed hash because ptrace() detects tampering. First we have to put in a break point and modify it's return to 0 to pass.
+However, we can't go directly to the computed hash because ptrace() detects tampering and exits. First we have to put in a break point and modify ptrace() return to 0 to pass.
 
-Then we can proceed to a second break point when the computed hash is compared with the *Serial*, here we can print the value of the computed hash. Let's try to find the *Serial* for *Login* ```username```.
+Then we can proceed to a second break point where the computed hash is compared with the *Serial*, here we can print the value of the computed hash. Let's try to find the *Serial* for *Login* ```username```.
 ```
 level06@OverRide:~$ gdb -q level06
 ...
@@ -71,12 +71,12 @@ Continuing.
 
 Breakpoint 2, 0x08048866 in auth ()
 (gdb) x/d $ebp-0x10                               // print hash in decimal
-0xffffd658:	6234463                               // 6234463
+0xffffd658:	6234463                           // 6234463
 ```
 
 ### Input Serial & Login
 
-So lets try the *Serial* ```6234463``` with *Login* ```username```.
+So lets try *Serial* ```6234463``` with *Login* ```username```.
 ```
 level06@OverRide:~$ ./level06
 ***********************************
@@ -93,7 +93,3 @@ level07
 $ cat /home/users/level07/.pass
 GbcPDRgsFK77LNnnuh7QyFYA2942Gp8yKj9KrWD8
 ```
-
-## Recreate Exploited Binary
-
-
