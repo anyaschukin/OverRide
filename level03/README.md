@@ -32,13 +32,42 @@ Let's take a deeper look at the program. See [dissasembly notes](https://github.
 Main() prompts for a password with ```printf()``` and reads from the stdin with ```scanf()```.
 
 It then calls a function ```test()```, with the user input and the number 322424845. 
+
 ```test()``` then makes the following calculation: ```322424845 - user input```. 
+
 ```test()``` then calls decrypt: with the result if it's less than 21, else with a random number. 
 
 The function ```decrypt()``` then passes a crypt over the parameter. 
+
 If the initial user inputted password is correct, ```decrypt()``` prints "Congratulations!" and calls ```system("/bin/sh")```.
 
 ### Build exploit
+
+The calculation in ```test()```
+```
+322424845 - user input
+if result < 21
+``` 
+... indicates that there are 21 potential passwords. Let's try them out!
+
+Let's construct our payload.
+```
+322424845 - 21 = 322424824
+for i in range {322424824..322424845}; do (echo $i; cat -) | ./level03 ; done
+```
+And test!
+```
+level03@OverRide:~$ for i in range {322424824..322424845}; do (echo $i; cat -) | ./level03 ; echo "Trying $((i+1))..."; done
+[...]
+Trying 322424827...
+***********************************
+*		level03		**
+***********************************
+whoami
+level04
+cat /home/users/level04/.pass
+kgv3tkEb9h2mLkRsPkXRfc2mHbjMxQzvb2FrgKkf
+```
 
 
 
