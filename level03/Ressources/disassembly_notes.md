@@ -140,10 +140,10 @@ Dump of assembler code for function decrypt:
    0x080486d7 <+119>:	mov    %eax,%edx
    0x080486d9 <+121>:	lea    -0x1d(%ebp),%eax
    0x080486dc <+124>:	add    -0x28(%ebp),%eax
-   0x080486df <+127>:	mov    %dl,(%eax)
+   0x080486df <+127>:	mov    %dl,(%eax)                               ; crypt[i] = crypt[i] ^ value; //// need to edit this after reconstruct binary
    0x080486e1 <+129>:	addl   $0x1,-0x28(%ebp)
    0x080486e5 <+133>:	mov    -0x28(%ebp),%eax
-   0x080486e8 <+136>:	cmp    -0x24(%ebp),%eax
+   0x080486e8 <+136>:	cmp    -0x24(%ebp),%eax                         ; while i (ebp-0x28) < len (ebp-0x24)
    0x080486eb <+139>:	jb     0x80486c7 <decrypt+103>
    
    0x080486ed <+141>:	lea    -0x1d(%ebp),%eax                            ; buf
