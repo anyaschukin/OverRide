@@ -60,25 +60,34 @@ Dump of assembler code for function main:
    0x0000000000400a8c <+156>:	callq  0x4007d0 <exit@plt>             ; exit(1)
 
 
-####
+#### log_wrapper() Start ####
 
    0x0000000000400a91 <+161>:	mov    -0xa0(%rbp),%rax                ; argv
-   0x0000000000400a98 <+168>:	add    $0x8,%rax                       ; 
-   0x0000000000400a9c <+172>:	mov    (%rax),%rdx                     ; 
-   0x0000000000400a9f <+175>:	mov    -0x88(%rbp),%rax                ; 
-   0x0000000000400aa6 <+182>:	mov    $0x400d96,%esi                  ; 
-   0x0000000000400aab <+187>:	mov    %rax,%rdi                       ; 
-   0x0000000000400aae <+190>:	callq  0x4008c4 <log_wrapper>          ; 
-   0x0000000000400ab3 <+195>:	mov    $0x400da9,%edx                  ; 
-   0x0000000000400ab8 <+200>:	mov    -0xa0(%rbp),%rax                ; 
-   0x0000000000400abf <+207>:	add    $0x8,%rax                       ; 
-   0x0000000000400ac3 <+211>:	mov    (%rax),%rax                     ; 
-   0x0000000000400ac6 <+214>:	mov    %rdx,%rsi                       ; 
-   0x0000000000400ac9 <+217>:	mov    %rax,%rdi                       ; 
-   0x0000000000400acc <+220>:	callq  0x4007c0 <fopen@plt>            ; 
-   0x0000000000400ad1 <+225>:	mov    %rax,-0x80(%rbp)                ; 
+   0x0000000000400a98 <+168>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400a9c <+172>:	mov    (%rax),%rdx                     ; load arg 3 - argv[1]
+   0x0000000000400a9f <+175>:	mov    -0x88(%rbp),%rax                ; log_file
+   0x0000000000400aa6 <+182>:	mov    $0x400d96,%esi                  ; load arg 2 - "Starting back up: "
+   0x0000000000400aab <+187>:	mov    %rax,%rdi                       ; load arg 1 - log_file
+   0x0000000000400aae <+190>:	callq  0x4008c4 <log_wrapper>          ; log_wrapper(log_file, "Starting back up: ", argv[1]);
+
+
+#### Open arg_file ####
+
+   0x0000000000400ab3 <+195>:	mov    $0x400da9,%edx                  ; "r"
+   0x0000000000400ab8 <+200>:	mov    -0xa0(%rbp),%rax                ; argv
+   0x0000000000400abf <+207>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400ac3 <+211>:	mov    (%rax),%rax                     ; argv[1]
+   0x0000000000400ac6 <+214>:	mov    %rdx,%rsi                       ; load arg 2 - "r"
+   0x0000000000400ac9 <+217>:	mov    %rax,%rdi                       ; load arg 1 - argv[1]
+   0x0000000000400acc <+220>:	callq  0x4007c0 <fopen@plt>            ; fopen(argv[1], "r");
+   0x0000000000400ad1 <+225>:	mov    %rax,-0x80(%rbp)                ; arg_file = fopen(argv[1], "r");
+
+
+#### 
+
    0x0000000000400ad5 <+229>:	cmpq   $0x0,-0x80(%rbp)                ; 
    0x0000000000400ada <+234>:	jne    0x400b09 <main+281>             ; 
+
    0x0000000000400adc <+236>:	mov    -0xa0(%rbp),%rax                ; 
    0x0000000000400ae3 <+243>:	add    $0x8,%rax                       ; 
    0x0000000000400ae7 <+247>:	mov    (%rax),%rdx                     ; 
