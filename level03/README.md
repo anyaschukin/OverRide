@@ -39,7 +39,7 @@ It then calls a function ```test()```, with the user input and the number 322424
 
 The function ```decrypt()``` then passes a crypt over the parameter. 
 
-If the initial user inputted password is correct, ```decrypt()``` prints "Congratulations!" and calls ```system("/bin/sh")```.
+If the initial user-inputted password is correct, ```decrypt()``` prints "Congratulations!" and calls ```system("/bin/sh")```.
 
 ### Build exploit
 
