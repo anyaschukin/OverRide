@@ -137,7 +137,7 @@ Edit permissions including suid, then move the binary to home directory.
 level02@OverRide:/tmp$ chmod u+s level01_source; chmod +wx ~; mv level01_source ~
 ```
 
-Launch the program!
+Exit back to user ```level01``` and launch the program!
 ```
 level01@OverRide:~$ ./level01_source
 ********* ADMIN LOGIN PROMPT *********
