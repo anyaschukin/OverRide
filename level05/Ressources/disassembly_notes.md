@@ -53,7 +53,7 @@ Dump of assembler code for function main:
    0x080484e8 <+164>:	mov    $0x0,%eax
    0x080484ed <+169>:	mov    0x1c(%esp),%ecx
    0x080484f1 <+173>:	mov    %edx,%edi
-   0x080484f3 <+175>:	repnz scas %es:(%edi),%al
+   0x080484f3 <+175>:	repnz scas %es:(%edi),%al        ; strlen(buffer)
    0x080484f5 <+177>:	mov    %ecx,%eax
    0x080484f7 <+179>:	not    %eax
    0x080484f9 <+181>:	sub    $0x1,%eax
@@ -62,7 +62,7 @@ Dump of assembler code for function main:
    
    0x08048500 <+188>:	lea    0x28(%esp),%eax
    0x08048504 <+192>:	mov    %eax,(%esp)
-   0x08048507 <+195>:	call   0x8048340 <printf@plt>
+   0x08048507 <+195>:	call   0x8048340 <printf@plt>    ; printf(buffer)
    
    0x0804850c <+200>:	movl   $0x0,(%esp)
    0x08048513 <+207>:	call   0x8048370 <exit@plt>
