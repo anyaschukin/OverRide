@@ -84,15 +84,3 @@ level05
 cat /home/users/level05/.pass
 3v8QLcN5SAhPaZZfEasfmXdwyR59ktDEMAwHF3aN
 ```
-
-## Recreate Exploited Binary
-
-As user ```level05```, in ```/tmp```, create and compile ```level04_source.c```
-```
-level05@OverRide:/tmp$ gcc level04_source.c -fno-stack-protector -z execstack -o level04_source
-```
-
-Edit permissions including suid, then move the binary to home directory.
-```
-level05@OverRide:/tmp$ chmod u+s level04_source; chmod +wx ~; mv level04_source ~
-```
