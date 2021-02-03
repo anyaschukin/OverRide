@@ -26,33 +26,43 @@ Dump of assembler code for function main:
    0x0000000000400a22 <+50>:	cmpl   $0x2,-0x94(%rbp)                ; argc = 2 ?
    0x0000000000400a29 <+57>:	je     0x400a4a <main+90>              ; jump past printf() Usage
 
-   0x0000000000400a2b <+59>:	mov    -0xa0(%rbp),%rax
-   0x0000000000400a32 <+66>:	mov    (%rax),%rdx
-   0x0000000000400a35 <+69>:	mov    $0x400d57,%eax
-   0x0000000000400a3a <+74>:	mov    %rdx,%rsi
-   0x0000000000400a3d <+77>:	mov    %rax,%rdi
-   0x0000000000400a40 <+80>:	mov    $0x0,%eax
-   0x0000000000400a45 <+85>:	callq  0x400730 <printf@plt>
+   0x0000000000400a2b <+59>:	mov    -0xa0(%rbp),%rax                ; argv
+   0x0000000000400a32 <+66>:	mov    (%rax),%rdx                     ; argv[0]
+   0x0000000000400a35 <+69>:	mov    $0x400d57,%eax                  ; "Usage: %s filename\n"
+   0x0000000000400a3a <+74>:	mov    %rdx,%rsi                       ; load arg 2 - argv[0]
+   0x0000000000400a3d <+77>:	mov    %rax,%rdi                       ; load arg 1 - "Usage: %s filename\n"
+   0x0000000000400a40 <+80>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400a45 <+85>:	callq  0x400730 <printf@plt>           ; printf("Usage: %s filename\n", argv[0]);
 
 
-#### 
+#### Open log file ####
 
-   0x0000000000400a4a <+90>:	mov    $0x400d6b,%edx
-   0x0000000000400a4f <+95>:	mov    $0x400d6d,%eax
-   0x0000000000400a54 <+100>:	mov    %rdx,%rsi
-   0x0000000000400a57 <+103>:	mov    %rax,%rdi
-   0x0000000000400a5a <+106>:	callq  0x4007c0 <fopen@plt>
-   0x0000000000400a5f <+111>:	mov    %rax,-0x88(%rbp)
-   0x0000000000400a66 <+118>:	cmpq   $0x0,-0x88(%rbp)
-   0x0000000000400a6e <+126>:	jne    0x400a91 <main+161>
-   0x0000000000400a70 <+128>:	mov    $0x400d7c,%eax
-   0x0000000000400a75 <+133>:	mov    $0x400d6d,%esi
-   0x0000000000400a7a <+138>:	mov    %rax,%rdi
-   0x0000000000400a7d <+141>:	mov    $0x0,%eax
-   0x0000000000400a82 <+146>:	callq  0x400730 <printf@plt>
-   0x0000000000400a87 <+151>:	mov    $0x1,%edi
-   0x0000000000400a8c <+156>:	callq  0x4007d0 <exit@plt>
-   0x0000000000400a91 <+161>:	mov    -0xa0(%rbp),%rax
+   0x0000000000400a4a <+90>:	mov    $0x400d6b,%edx                  ; "w"
+   0x0000000000400a4f <+95>:	mov    $0x400d6d,%eax                  ; "./backups/.log"
+   0x0000000000400a54 <+100>:	mov    %rdx,%rsi                       ; load arg 2 - "w" (write)
+   0x0000000000400a57 <+103>:	mov    %rax,%rdi                       ; load arg 1 - "./backups/.log"
+   0x0000000000400a5a <+106>:	callq  0x4007c0 <fopen@plt>            ; fopen("./backups/.log", "w")
+   0x0000000000400a5f <+111>:	mov    %rax,-0x88(%rbp)                ; FILE *log_file = fopen("./backups/.log", "w")
+
+
+#### Failed to open file -> exit ####
+
+   0x0000000000400a66 <+118>:	cmpq   $0x0,-0x88(%rbp)                ; failed to open file?
+   0x0000000000400a6e <+126>:	jne    0x400a91 <main+161>             ; jump past exit(1)
+
+   0x0000000000400a70 <+128>:	mov    $0x400d7c,%eax                  ; "ERROR: Failed to open %s\n"
+   0x0000000000400a75 <+133>:	mov    $0x400d6d,%esi                  ; load arg 2 - "./backups/.log"
+   0x0000000000400a7a <+138>:	mov    %rax,%rdi                       ; load arg 1 - "ERROR: Failed to open %s\n"
+   0x0000000000400a7d <+141>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400a82 <+146>:	callq  0x400730 <printf@plt>           ; printf("ERROR: Failed to open %s\n", "./backups/.log");
+
+   0x0000000000400a87 <+151>:	mov    $0x1,%edi                       ; load (1) for exit(1)
+   0x0000000000400a8c <+156>:	callq  0x4007d0 <exit@plt>             ; exit(1)
+
+
+####
+
+   0x0000000000400a91 <+161>:	mov    -0xa0(%rbp),%rax                ; argv
    0x0000000000400a98 <+168>:	add    $0x8,%rax
    0x0000000000400a9c <+172>:	mov    (%rax),%rdx
    0x0000000000400a9f <+175>:	mov    -0x88(%rbp),%rax
