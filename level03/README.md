@@ -68,25 +68,3 @@ level04
 cat /home/users/level04/.pass
 kgv3tkEb9h2mLkRsPkXRfc2mHbjMxQzvb2FrgKkf
 ```
-
-## Recreate Exploited Binary
-
-As user ```level04```, in ```/tmp```, create and compile ```level03_source.c```
-```
-level04@OverRide:/tmp$ gcc level03_source.c -o level03_source
-```
-
-Edit permissions including suid, then move the binary to home directory.
-```
-level04@OverRide:/tmp$ chmod u+s level03_source; chmod +wx ~; mv level03_source ~
-```
-Exit back to user ```level03``` and launch the program.
-```
-level03@OverRide:~$ ./level03_source
-***********************************
-*		level03		**
-***********************************
-Password:1234
-
-Invalid Password
-```
