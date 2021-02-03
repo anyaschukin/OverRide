@@ -6,17 +6,26 @@ level08@OverRide:~$ gdb -q level08
 Dump of assembler code for function main:
    0x00000000004009f0 <+0>:	push   %rbp
    0x00000000004009f1 <+1>:	mov    %rsp,%rbp
-   0x00000000004009f4 <+4>:	sub    $0xb0,%rsp                   ; allocate 176 bytes on stack for local variables
 
-   0x00000000004009fb <+11>:	mov    %edi,-0x94(%rbp)
-   0x0000000000400a01 <+17>:	mov    %rsi,-0xa0(%rbp)
-   0x0000000000400a08 <+24>:	mov    %fs:0x28,%rax
-   0x0000000000400a11 <+33>:	mov    %rax,-0x8(%rbp)
-   0x0000000000400a15 <+37>:	xor    %eax,%eax
-   0x0000000000400a17 <+39>:	movb   $0xff,-0x71(%rbp)
-   0x0000000000400a1b <+43>:	movl   $0xffffffff,-0x78(%rbp)
-   0x0000000000400a22 <+50>:	cmpl   $0x2,-0x94(%rbp)
-   0x0000000000400a29 <+57>:	je     0x400a4a <main+90>
+
+#### Initialize Stack ####
+
+   0x00000000004009f4 <+4>:	sub    $0xb0,%rsp                      ; allocate 176 bytes on stack for local variables
+
+   0x00000000004009fb <+11>:	mov    %edi,-0x94(%rbp)                ; argc
+   0x0000000000400a01 <+17>:	mov    %rsi,-0xa0(%rbp)                ; argv
+   0x0000000000400a08 <+24>:	mov    %fs:0x28,%rax                   ; canary value
+   0x0000000000400a11 <+33>:	mov    %rax,-0x8(%rbp)                 ; canary value
+   0x0000000000400a15 <+37>:	xor    %eax,%eax                       ; clear register
+   0x0000000000400a17 <+39>:	movb   $0xff,-0x71(%rbp)               ; 255
+   0x0000000000400a1b <+43>:	movl   $0xffffffff,-0x78(%rbp)         ; 4294967295 - ∞
+
+
+#### If no argument print usage ####
+
+   0x0000000000400a22 <+50>:	cmpl   $0x2,-0x94(%rbp)                ; argc = 2 ?
+   0x0000000000400a29 <+57>:	je     0x400a4a <main+90>              ; jump past printf() Usage
+
    0x0000000000400a2b <+59>:	mov    -0xa0(%rbp),%rax
    0x0000000000400a32 <+66>:	mov    (%rax),%rdx
    0x0000000000400a35 <+69>:	mov    $0x400d57,%eax
@@ -24,6 +33,10 @@ Dump of assembler code for function main:
    0x0000000000400a3d <+77>:	mov    %rax,%rdi
    0x0000000000400a40 <+80>:	mov    $0x0,%eax
    0x0000000000400a45 <+85>:	callq  0x400730 <printf@plt>
+
+
+#### 
+
    0x0000000000400a4a <+90>:	mov    $0x400d6b,%edx
    0x0000000000400a4f <+95>:	mov    $0x400d6d,%eax
    0x0000000000400a54 <+100>:	mov    %rdx,%rsi
@@ -75,7 +88,7 @@ Dump of assembler code for function main:
    0x0000000000400b20 <+304>:	movzbl 0xa(%rdx),%edx
    0x0000000000400b24 <+308>:	mov    %dl,0xa(%rax)
    0x0000000000400b27 <+311>:	lea    -0x70(%rbp),%rax
-   0x0000000000400b2b <+315>:	movq   $0xffffffffffffffff,-0xa8(%rbp)  ;
+   0x0000000000400b2b <+315>:	movq   $0xffffffffffffffff,-0xa8(%rbp) ;
    0x0000000000400b36 <+326>:	mov    %rax,%rdx
    0x0000000000400b39 <+329>:	mov    $0x0,%eax
    0x0000000000400b3e <+334>:	mov    -0xa8(%rbp),%rcx
