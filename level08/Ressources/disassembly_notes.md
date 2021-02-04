@@ -18,7 +18,7 @@ Dump of assembler code for function main:
    0x0000000000400a11 <+33>:	mov    %rax,-0x8(%rbp)                 ; canary value
    0x0000000000400a15 <+37>:	xor    %eax,%eax                       ; clear register
    0x0000000000400a17 <+39>:	movb   $0xff,-0x71(%rbp)               ; 255
-   0x0000000000400a1b <+43>:	movl   $0xffffffff,-0x78(%rbp)         ; 4294967295 - ∞
+   0x0000000000400a1b <+43>:	movl   $0xffffffff,-0x78(%rbp)         ; -1
 
 
 #### If no argument print usage ####
@@ -35,7 +35,7 @@ Dump of assembler code for function main:
    0x0000000000400a45 <+85>:	callq  0x400730 <printf@plt>           ; printf("Usage: %s filename\n", argv[0]);
 
 
-#### Open log file ####
+#### Open log_file ####
 
    0x0000000000400a4a <+90>:	mov    $0x400d6b,%edx                  ; "w"
    0x0000000000400a4f <+95>:	mov    $0x400d6d,%eax                  ; "./backups/.log"
@@ -45,7 +45,7 @@ Dump of assembler code for function main:
    0x0000000000400a5f <+111>:	mov    %rax,-0x88(%rbp)                ; FILE *log_file = fopen("./backups/.log", "w")
 
 
-#### Failed to open file -> exit ####
+#### Failed to open log_file -> exit ####
 
    0x0000000000400a66 <+118>:	cmpq   $0x0,-0x88(%rbp)                ; failed to open file?
    0x0000000000400a6e <+126>:	jne    0x400a91 <main+161>             ; jump past exit(1)
@@ -76,85 +76,112 @@ Dump of assembler code for function main:
    0x0000000000400ab3 <+195>:	mov    $0x400da9,%edx                  ; "r"
    0x0000000000400ab8 <+200>:	mov    -0xa0(%rbp),%rax                ; argv
    0x0000000000400abf <+207>:	add    $0x8,%rax                       ; argv[1]
-   0x0000000000400ac3 <+211>:	mov    (%rax),%rax                     ; argv[1]
+   0x0000000000400ac3 <+211>:	mov    (%rax),%rax                     ; *argv[1]
    0x0000000000400ac6 <+214>:	mov    %rdx,%rsi                       ; load arg 2 - "r"
    0x0000000000400ac9 <+217>:	mov    %rax,%rdi                       ; load arg 1 - argv[1]
    0x0000000000400acc <+220>:	callq  0x4007c0 <fopen@plt>            ; fopen(argv[1], "r");
    0x0000000000400ad1 <+225>:	mov    %rax,-0x80(%rbp)                ; arg_file = fopen(argv[1], "r");
 
 
-#### 
+#### Failed to open arg_file -> exit ####
 
-   0x0000000000400ad5 <+229>:	cmpq   $0x0,-0x80(%rbp)                ; 
-   0x0000000000400ada <+234>:	jne    0x400b09 <main+281>             ; 
+   0x0000000000400ad5 <+229>:	cmpq   $0x0,-0x80(%rbp)                ; failed to open arg_file ?
+   0x0000000000400ada <+234>:	jne    0x400b09 <main+281>             ; jump past exit(1)
 
-   0x0000000000400adc <+236>:	mov    -0xa0(%rbp),%rax                ; 
-   0x0000000000400ae3 <+243>:	add    $0x8,%rax                       ; 
-   0x0000000000400ae7 <+247>:	mov    (%rax),%rdx                     ; 
-   0x0000000000400aea <+250>:	mov    $0x400d7c,%eax                  ; 
-   0x0000000000400aef <+255>:	mov    %rdx,%rsi                       ; 
-   0x0000000000400af2 <+258>:	mov    %rax,%rdi                       ; 
-   0x0000000000400af5 <+261>:	mov    $0x0,%eax                       ; 
-   0x0000000000400afa <+266>:	callq  0x400730 <printf@plt>           ; 
-   0x0000000000400aff <+271>:	mov    $0x1,%edi                       ; 
-   0x0000000000400b04 <+276>:	callq  0x4007d0 <exit@plt>             ; 
-   0x0000000000400b09 <+281>:	mov    $0x400dab,%edx                  ; 
-   0x0000000000400b0e <+286>:	lea    -0x70(%rbp),%rax                ; 
-   0x0000000000400b12 <+290>:	mov    (%rdx),%rcx                     ; 
-   0x0000000000400b15 <+293>:	mov    %rcx,(%rax)                     ; 
-   0x0000000000400b18 <+296>:	movzwl 0x8(%rdx),%ecx                  ; 
-   0x0000000000400b1c <+300>:	mov    %cx,0x8(%rax)                   ; 
-   0x0000000000400b20 <+304>:	movzbl 0xa(%rdx),%edx                  ; 
-   0x0000000000400b24 <+308>:	mov    %dl,0xa(%rax)                   ; 
-   0x0000000000400b27 <+311>:	lea    -0x70(%rbp),%rax                ; 
-   0x0000000000400b2b <+315>:	movq   $0xffffffffffffffff,-0xa8(%rbp) ; 
-   0x0000000000400b36 <+326>:	mov    %rax,%rdx                       ; 
-   0x0000000000400b39 <+329>:	mov    $0x0,%eax                       ; 
-   0x0000000000400b3e <+334>:	mov    -0xa8(%rbp),%rcx                ; 
-   0x0000000000400b45 <+341>:	mov    %rdx,%rdi                       ; 
-   0x0000000000400b48 <+344>:	repnz scas %es:(%rdi),%al              ; 
-   0x0000000000400b4a <+346>:	mov    %rcx,%rax                       ; 
-   0x0000000000400b4d <+349>:	not    %rax                            ; 
-   0x0000000000400b50 <+352>:	lea    -0x1(%rax),%rdx                 ; 
-   0x0000000000400b54 <+356>:	mov    $0x63,%eax                      ; 
-   0x0000000000400b59 <+361>:	mov    %rax,%rcx                       ; 
-   0x0000000000400b5c <+364>:	sub    %rdx,%rcx                       ; 
-   0x0000000000400b5f <+367>:	mov    %rcx,%rdx                       ; 
-   0x0000000000400b62 <+370>:	mov    -0xa0(%rbp),%rax;               ; 
-   0x0000000000400b69 <+377>:	add    $0x8,%rax                       ; 
-   0x0000000000400b6d <+381>:	mov    (%rax),%rax                     ; 
-   0x0000000000400b70 <+384>:	mov    %rax,%rcx                       ; 
-   0x0000000000400b73 <+387>:	lea    -0x70(%rbp),%rax                ; 
-   0x0000000000400b77 <+391>:	mov    %rcx,%rsi                       ; 
-   0x0000000000400b7a <+394>:	mov    %rax,%rdi                       ; 
-   0x0000000000400b7d <+397>:	callq  0x400750 <strncat@plt>          ; 
-   0x0000000000400b82 <+402>:	lea    -0x70(%rbp),%rax                ; 
-   0x0000000000400b86 <+406>:	mov    $0x1b0,%edx                     ; 
-   0x0000000000400b8b <+411>:	mov    $0xc1,%esi                      ; 
-   0x0000000000400b90 <+416>:	mov    %rax,%rdi                       ; 
-   0x0000000000400b93 <+419>:	mov    $0x0,%eax                       ; 
-   0x0000000000400b98 <+424>:	callq  0x4007b0 <open@plt>             ; 
-   0x0000000000400b9d <+429>:	mov    %eax,-0x78(%rbp)                ; 
-   0x0000000000400ba0 <+432>:	cmpl   $0x0,-0x78(%rbp)                ; 
-   0x0000000000400ba4 <+436>:	jns    0x400bed <main+509>             ; 
-   0x0000000000400ba6 <+438>:	mov    -0xa0(%rbp),%rax                ; 
-   0x0000000000400bad <+445>:	add    $0x8,%rax                       ; 
-   0x0000000000400bb1 <+449>:	mov    (%rax),%rdx                     ; 
-   0x0000000000400bb4 <+452>:	mov    $0x400db6,%eax                  ; 
-   0x0000000000400bb9 <+457>:	mov    $0x400dab,%esi                  ; 
-   0x0000000000400bbe <+462>:	mov    %rax,%rdi                       ; 
-   0x0000000000400bc1 <+465>:	mov    $0x0,%eax                       ; 
-   0x0000000000400bc6 <+470>:	callq  0x400730 <printf@plt>           ; 
-   0x0000000000400bcb <+475>:	mov    $0x1,%edi                       ; 
-   0x0000000000400bd0 <+480>:	callq  0x4007d0 <exit@plt>             ; 
-   0x0000000000400bd5 <+485>:	lea    -0x71(%rbp),%rcx                ; 
-   0x0000000000400bd9 <+489>:	mov    -0x78(%rbp),%eax                ; 
-   0x0000000000400bdc <+492>:	mov    $0x1,%edx                       ; 
-   0x0000000000400be1 <+497>:	mov    %rcx,%rsi                       ; 
-   0x0000000000400be4 <+500>:	mov    %eax,%edi                       ; 
-   0x0000000000400be6 <+502>:	callq  0x400700 <write@plt>            ; 
-   0x0000000000400beb <+507>:	jmp    0x400bee <main+510>             ; 
+   0x0000000000400adc <+236>:	mov    -0xa0(%rbp),%rax                ; argv
+   0x0000000000400ae3 <+243>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400ae7 <+247>:	mov    (%rax),%rdx                     ; *argv[1]
+   0x0000000000400aea <+250>:	mov    $0x400d7c,%eax                  ; "ERROR: Failed to open %s\n"
+   0x0000000000400aef <+255>:	mov    %rdx,%rsi                       ; load arg 2 - argv[1]
+   0x0000000000400af2 <+258>:	mov    %rax,%rdi                       ; load arg 1 - "ERROR: Failed to open %s\n"
+   0x0000000000400af5 <+261>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400afa <+266>:	callq  0x400730 <printf@plt>           ; printf("ERROR: Failed to open %s\n", argv[1]);
+
+   0x0000000000400aff <+271>:	mov    $0x1,%edi                       ; load (1) for exit(1)
+   0x0000000000400b04 <+276>:	callq  0x4007d0 <exit@plt>             ; exit(1);
+
+
+#### copy "./backups/" to filename ####
+
+   0x0000000000400b09 <+281>:	mov    $0x400dab,%edx                  ; "./backups/"
+   0x0000000000400b0e <+286>:	lea    -0x70(%rbp),%rax                ; char filename[100];
+   0x0000000000400b12 <+290>:	mov    (%rdx),%rcx                     ; "./backups/"
+   0x0000000000400b15 <+293>:	mov    %rcx,(%rax)                     ; "./backups/"
+   0x0000000000400b18 <+296>:	movzwl 0x8(%rdx),%ecx                  ; unsigned int to long
+   0x0000000000400b1c <+300>:	mov    %cx,0x8(%rax)                   ; "./backups/"
+   0x0000000000400b20 <+304>:	movzbl 0xa(%rdx),%edx                  ; unsigned int to long
+   0x0000000000400b24 <+308>:	mov    %dl,0xa(%rax)                   ; last 8 bits
+   0x0000000000400b27 <+311>:	lea    -0x70(%rbp),%rax                ; load filename
+   0x0000000000400b2b <+315>:	movq   $0xffffffffffffffff,-0xa8(%rbp) ; -1
+   0x0000000000400b36 <+326>:	mov    %rax,%rdx                       ; filename
+   0x0000000000400b39 <+329>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400b3e <+334>:	mov    -0xa8(%rbp),%rcx                ; -1
+   0x0000000000400b45 <+341>:	mov    %rdx,%rdi                       ; filename
+   0x0000000000400b48 <+344>:	repnz scas %es:(%rdi),%al              ; in effect: strcpy(filename, "./backups/")
+
+
+#### Concaternate argv[1] to filename ####
+
+   0x0000000000400b4a <+346>:	mov    %rcx,%rax                       ; strcpy len
+   0x0000000000400b4d <+349>:	not    %rax                            ; len
+   0x0000000000400b50 <+352>:	lea    -0x1(%rax),%rdx                 ; len -1
+   0x0000000000400b54 <+356>:	mov    $0x63,%eax                      ; 99
+   0x0000000000400b59 <+361>:	mov    %rax,%rcx                       ; len
+   0x0000000000400b5c <+364>:	sub    %rdx,%rcx                       ; 99 - (len - 1)
+   0x0000000000400b5f <+367>:	mov    %rcx,%rdx                       ; 99 - (len - 1)
+   0x0000000000400b62 <+370>:	mov    -0xa0(%rbp),%rax;               ; argv
+   0x0000000000400b69 <+377>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400b6d <+381>:	mov    (%rax),%rax                     ; *argv[1]
+   0x0000000000400b70 <+384>:	mov    %rax,%rcx                       ; *argv[1]
+   0x0000000000400b73 <+387>:	lea    -0x70(%rbp),%rax                ; filename
+   0x0000000000400b77 <+391>:	mov    %rcx,%rsi                       ; load arg 2 - argv[1]
+   0x0000000000400b7a <+394>:	mov    %rax,%rdi                       ; load arg 1 - filename
+   0x0000000000400b7d <+397>:	callq  0x400750 <strncat@plt>          ; strncat(filename, argv[1], 99 - (strlen(filename) - 1)
+
+
+#### Open file ####
+
+   0x0000000000400b82 <+402>:	lea    -0x70(%rbp),%rax                ; filename
+   0x0000000000400b86 <+406>:	mov    $0x1b0,%edx                     ; 0x1b0
+   0x0000000000400b8b <+411>:	mov    $0xc1,%esi                      ; 0xc1
+   0x0000000000400b90 <+416>:	mov    %rax,%rdi                       ; filename
+   0x0000000000400b93 <+419>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400b98 <+424>:	callq  0x4007b0 <open@plt>             ; open(filename, 0xc1, 0x1b0)
+   0x0000000000400b9d <+429>:	mov    %eax,-0x78(%rbp)                ; fd = open(filename, 0xc1, 0x1b0);
+
+
+#### Failed to open file -> exit ####
+
+   0x0000000000400ba0 <+432>:	cmpl   $0x0,-0x78(%rbp)                ; failed to open file?
+   0x0000000000400ba4 <+436>:	jns    0x400bed <main+509>             ; jump past exit(1)
+
+   0x0000000000400ba6 <+438>:	mov    -0xa0(%rbp),%rax                ; argv
+   0x0000000000400bad <+445>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400bb1 <+449>:	mov    (%rax),%rdx                     ; load arg 3 - argv[1]
+   0x0000000000400bb4 <+452>:	mov    $0x400db6,%eax                  ; "ERROR: Failed to open %s%s\n"
+   0x0000000000400bb9 <+457>:	mov    $0x400dab,%esi                  ; load arg 2 - "./backups/"
+   0x0000000000400bbe <+462>:	mov    %rax,%rdi                       ; load arg 1 - "ERROR: Failed to open %s%s\n"
+   0x0000000000400bc1 <+465>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400bc6 <+470>:	callq  0x400730 <printf@plt>           ; printf("ERROR: Failed to open %s%s\n", "./backups/", argv[1])
+
+   0x0000000000400bcb <+475>:	mov    $0x1,%edi                       ; load (1) for exit(1)
+   0x0000000000400bd0 <+480>:	callq  0x4007d0 <exit@plt>             ; exit(1);
+
+
+#### Write character to fd ####
+
+   0x0000000000400bd5 <+485>:	lea    -0x71(%rbp),%rcx                ; int c
+   0x0000000000400bd9 <+489>:	mov    -0x78(%rbp),%eax                ; fd
+   0x0000000000400bdc <+492>:	mov    $0x1,%edx                       ; 1
+   0x0000000000400be1 <+497>:	mov    %rcx,%rsi                       ; int c
+   0x0000000000400be4 <+500>:	mov    %eax,%edi                       ; fd
+   0x0000000000400be6 <+502>:	callq  0x400700 <write@plt>            ; write(fd, c, 1);
+   0x0000000000400beb <+507>:	jmp    0x400bee <main+510>             ; jump to end of loop
    0x0000000000400bed <+509>:	nop
+
+
+#### Read character from arg_file ####
+
    0x0000000000400bee <+510>:	mov    -0x80(%rbp),%rax                ; 
    0x0000000000400bf2 <+514>:	mov    %rax,%rdi                       ; 
    0x0000000000400bf5 <+517>:	callq  0x400760 <fgetc@plt>            ; 
