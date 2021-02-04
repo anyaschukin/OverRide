@@ -1,5 +1,6 @@
 # Level 8 - Disassembly Notes
 
+## main()
 ```
 level08@OverRide:~$ gdb -q level08
 ...
@@ -202,7 +203,7 @@ Dump of assembler code for function main:
    0x0000000000400c22 <+562>:	callq  0x4008c4 <log_wrapper>          ; log_wrapper(log_file, "Finished back up ", argv[1]);
 
 
-#### Close ####
+#### Close files ####
 
    0x0000000000400c27 <+567>:	mov    -0x80(%rbp),%rax                ; arg_file
    0x0000000000400c2b <+571>:	mov    %rax,%rdi                       ; load arg - arg_file
@@ -211,6 +212,9 @@ Dump of assembler code for function main:
    0x0000000000400c33 <+579>:	mov    -0x78(%rbp),%eax                ; fd
    0x0000000000400c36 <+582>:	mov    %eax,%edi                       ; load arg - fd
    0x0000000000400c38 <+584>:	callq  0x400770 <close@plt>            ; close(fd);
+
+
+#### Check canary, return ####
 
    0x0000000000400c3d <+589>:	mov    $0x0,%eax                       ; 0
    0x0000000000400c42 <+594>:	mov    -0x8(%rbp),%rdi                 ; canary value
@@ -222,7 +226,7 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-### #### ---- log_wrapper() ---- ####
+## log_wrapper()
 ```
 (gdb) disas log_wrapper
 Dump of assembler code for function log_wrapper:
@@ -233,73 +237,85 @@ Dump of assembler code for function log_wrapper:
 #### Initialize Stack ####
 
    0x00000000004008c8 <+4>:	sub    $0x130,%rsp                     ; allocate 304 bytes on stack for local variables
-   0x00000000004008cf <+11>:	mov    %rdi,-0x118(%rbp)               ; store arg 1 on local stack - file
-   0x00000000004008d6 <+18>:	mov    %rsi,-0x120(%rbp)               ; store arg 2 on local stack - message
-   0x00000000004008dd <+25>:	mov    %rdx,-0x128(%rbp)               ; store arg 3 on local stack - filename
+   0x00000000004008cf <+11>:	mov    %rdi,-0x118(%rbp)               ; store arg 1 on local stack - FILE *log_file
+   0x00000000004008d6 <+18>:	mov    %rsi,-0x120(%rbp)               ; store arg 2 on local stack - char *message
+   0x00000000004008dd <+25>:	mov    %rdx,-0x128(%rbp)               ; store arg 3 on local stack - char *filename
 
    0x00000000004008e4 <+32>:	mov    %fs:0x28,%rax                   ; canary value
    0x00000000004008ed <+41>:	mov    %rax,-0x8(%rbp)                 ; store canary value at end of stack
    0x00000000004008f1 <+45>:	xor    %eax,%eax                       ; clear register eax
 
 
-#### ####
+#### Copy message to log buffer ####
 
-   0x00000000004008f3 <+47>:	mov    -0x120(%rbp),%rdx               ; 
-   0x00000000004008fa <+54>:	lea    -0x110(%rbp),%rax               ; 
-   0x0000000000400901 <+61>:	mov    %rdx,%rsi                       ; 
-   0x0000000000400904 <+64>:	mov    %rax,%rdi                       ; 
-   0x0000000000400907 <+67>:	callq  0x4006f0 <strcpy@plt>           ; 
+   0x00000000004008f3 <+47>:	mov    -0x120(%rbp),%rdx               ; message
+   0x00000000004008fa <+54>:	lea    -0x110(%rbp),%rax               ; char log[264];
+   0x0000000000400901 <+61>:	mov    %rdx,%rsi                       ; load arg 2 - message
+   0x0000000000400904 <+64>:	mov    %rax,%rdi                       ; load arg 1 - log
+   0x0000000000400907 <+67>:	callq  0x4006f0 <strcpy@plt>           ; strcpy(log, message);
 
 
-#### ####
+#### Copy filename to log buffer ####
 
-   0x000000000040090c <+72>:	mov    -0x128(%rbp),%rsi               ; 
-   0x0000000000400913 <+79>:	lea    -0x110(%rbp),%rax               ; 
-   0x000000000040091a <+86>:	movq   $0xffffffffffffffff,-0x130(%rbp); 
-   0x0000000000400925 <+97>:	mov    %rax,%rdx                       ; 
-   0x0000000000400928 <+100>:	mov    $0x0,%eax                       ; 
-   0x000000000040092d <+105>:	mov    -0x130(%rbp),%rcx               ; 
-   0x0000000000400934 <+112>:	mov    %rdx,%rdi                       ; 
-   0x0000000000400937 <+115>:	repnz scas %es:(%rdi),%al              ; 
-   0x0000000000400939 <+117>:	mov    %rcx,%rax                       ; 
-   0x000000000040093c <+120>:	not    %rax                            ; 
-   0x000000000040093f <+123>:	lea    -0x1(%rax),%rdx                 ; 
-   0x0000000000400943 <+127>:	mov    $0xfe,%eax                      ; 
-   0x0000000000400948 <+132>:	mov    %rax,%r8                        ; 
-   0x000000000040094b <+135>:	sub    %rdx,%r8                        ; 
-   0x000000000040094e <+138>:	lea    -0x110(%rbp),%rax               ; 
-   0x0000000000400955 <+145>:	movq   $0xffffffffffffffff,-0x130(%rbp); 
-   0x0000000000400960 <+156>:	mov    %rax,%rdx                       ; 
-   0x0000000000400963 <+159>:	mov    $0x0,%eax                       ; 
-   0x0000000000400968 <+164>:	mov    -0x130(%rbp),%rcx               ; 
-   0x000000000040096f <+171>:	mov    %rdx,%rdi                       ; 
-   0x0000000000400972 <+174>:	repnz scas %es:(%rdi),%al              ; 
-   0x0000000000400974 <+176>:	mov    %rcx,%rax                       ; 
-   0x0000000000400977 <+179>:	not    %rax                            ; 
-   0x000000000040097a <+182>:	lea    -0x1(%rax),%rdx                 ; 
-   0x000000000040097e <+186>:	lea    -0x110(%rbp),%rax               ; 
-   0x0000000000400985 <+193>:	add    %rdx,%rax                       ; 
-   0x0000000000400988 <+196>:	mov    %rsi,%rdx                       ; 
-   0x000000000040098b <+199>:	mov    %r8,%rsi                        ; 
-   0x000000000040098e <+202>:	mov    %rax,%rdi                       ; 
-   0x0000000000400991 <+205>:	mov    $0x0,%eax                       ; 
-   0x0000000000400996 <+210>:	callq  0x400740 <snprintf@plt>         ; 
-   0x000000000040099b <+215>:	lea    -0x110(%rbp),%rax               ; 
-   0x00000000004009a2 <+222>:	mov    $0x400d4c,%esi                  ; 
-   0x00000000004009a7 <+227>:	mov    %rax,%rdi                       ; 
-   0x00000000004009aa <+230>:	callq  0x400780 <strcspn@plt>          ; 
-   0x00000000004009af <+235>:	movb   $0x0,-0x110(%rbp,%rax,1)        ; 
-   0x00000000004009b7 <+243>:	mov    $0x400d4e,%ecx                  ; 
-   0x00000000004009bc <+248>:	lea    -0x110(%rbp),%rdx               ; 
-   0x00000000004009c3 <+255>:	mov    -0x118(%rbp),%rax               ; 
-   0x00000000004009ca <+262>:	mov    %rcx,%rsi                       ; 
-   0x00000000004009cd <+265>:	mov    %rax,%rdi                       ; 
-   0x00000000004009d0 <+268>:	mov    $0x0,%eax                       ; 
-   0x00000000004009d5 <+273>:	callq  0x4007a0 <fprintf@plt>          ; 
-   0x00000000004009da <+278>:	mov    -0x8(%rbp),%rax                 ; 
-   0x00000000004009de <+282>:	xor    %fs:0x28,%rax                   ; 
-   0x00000000004009e7 <+291>:	je     0x4009ee <log_wrapper+298>      ; 
-   0x00000000004009e9 <+293>:	callq  0x400720 <__stack_chk_fail@plt> ; 
+   0x000000000040090c <+72>:	mov    -0x128(%rbp),%rsi               ; filename
+   0x0000000000400913 <+79>:	lea    -0x110(%rbp),%rax               ; log
+   0x000000000040091a <+86>:	movq   $0xffffffffffffffff,-0x130(%rbp); -1
+   0x0000000000400925 <+97>:	mov    %rax,%rdx                       ; log
+   0x0000000000400928 <+100>:	mov    $0x0,%eax                       ; 0
+   0x000000000040092d <+105>:	mov    -0x130(%rbp),%rcx               ; -1
+   0x0000000000400934 <+112>:	mov    %rdx,%rdi                       ; log
+   0x0000000000400937 <+115>:	repnz scas %es:(%rdi),%al              ; in effect: strlen log
+   0x0000000000400939 <+117>:	mov    %rcx,%rax                       ; strlen return
+   0x000000000040093c <+120>:	not    %rax                            ; !
+   0x000000000040093f <+123>:	lea    -0x1(%rax),%rdx                 ; -1
+   0x0000000000400943 <+127>:	mov    $0xfe,%eax                      ; 254
+   0x0000000000400948 <+132>:	mov    %rax,%r8                        ; 254
+   0x000000000040094b <+135>:	sub    %rdx,%r8                        ; 254 - len(log)
+   0x000000000040094e <+138>:	lea    -0x110(%rbp),%rax               ; log
+   0x0000000000400955 <+145>:	movq   $0xffffffffffffffff,-0x130(%rbp); -1
+   0x0000000000400960 <+156>:	mov    %rax,%rdx                       ; log
+   0x0000000000400963 <+159>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400968 <+164>:	mov    -0x130(%rbp),%rcx               ; -1
+   0x000000000040096f <+171>:	mov    %rdx,%rdi                       ; log
+   0x0000000000400972 <+174>:	repnz scas %es:(%rdi),%al              ; strlen log
+   0x0000000000400974 <+176>:	mov    %rcx,%rax                       ; strlen return
+   0x0000000000400977 <+179>:	not    %rax                            ; !
+   0x000000000040097a <+182>:	lea    -0x1(%rax),%rdx                 ; -1
+   0x000000000040097e <+186>:	lea    -0x110(%rbp),%rax               ; log
+   0x0000000000400985 <+193>:	add    %rdx,%rax                       ; -1
+   0x0000000000400988 <+196>:	mov    %rsi,%rdx                       ; filename
+   0x000000000040098b <+199>:	mov    %r8,%rsi                        ; 254 - len(log)
+   0x000000000040098e <+202>:	mov    %rax,%rdi                       ; -1
+   0x0000000000400991 <+205>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400996 <+210>:	callq  0x400740 <snprintf@plt>         ; snprintf(&log[strlen(log)], 254 - strlen(log), filename);
+
+
+#### Null terminate log ####
+
+   0x000000000040099b <+215>:	lea    -0x110(%rbp),%rax               ; log
+   0x00000000004009a2 <+222>:	mov    $0x400d4c,%esi                  ; load arg 2 - "\n"
+   0x00000000004009a7 <+227>:	mov    %rax,%rdi                       ; load arg 1 - log
+   0x00000000004009aa <+230>:	callq  0x400780 <strcspn@plt>          ; strcspn(log, "\n")
+   0x00000000004009af <+235>:	movb   $0x0,-0x110(%rbp,%rax,1)        ; log[strcspn(log, "\n")] = 0;
+
+
+#### Print log to log_file ####
+
+   0x00000000004009b7 <+243>:	mov    $0x400d4e,%ecx                  ; "LOG: %s\n"
+   0x00000000004009bc <+248>:	lea    -0x110(%rbp),%rdx               ; load arg 3 - log
+   0x00000000004009c3 <+255>:	mov    -0x118(%rbp),%rax               ; log_file
+   0x00000000004009ca <+262>:	mov    %rcx,%rsi                       ; load arg 2 - "LOG: %s\n"
+   0x00000000004009cd <+265>:	mov    %rax,%rdi                       ; load arg 1 - log_file
+   0x00000000004009d0 <+268>:	mov    $0x0,%eax                       ; 0
+   0x00000000004009d5 <+273>:	callq  0x4007a0 <fprintf@plt>          ; fprintf(log_file, "LOG: %s\n", log);
+
+
+#### Check canary, return ####
+
+   0x00000000004009da <+278>:	mov    -0x8(%rbp),%rax                 ; load canary from stack
+   0x00000000004009de <+282>:	xor    %fs:0x28,%rax                   ; compare with original canary
+   0x00000000004009e7 <+291>:	je     0x4009ee <log_wrapper+298>      ; jump past stack overflow exit
+   0x00000000004009e9 <+293>:	callq  0x400720 <__stack_chk_fail@plt> ; stack overflow exit
    0x00000000004009ee <+298>:	leaveq
    0x00000000004009ef <+299>:	retq
 End of assembler dump
