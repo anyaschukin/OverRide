@@ -47,7 +47,7 @@ Dump of assembler code for function main:
 
 #### Failed to open log_file -> exit ####
 
-   0x0000000000400a66 <+118>:	cmpq   $0x0,-0x88(%rbp)                ; failed to open file?
+   0x0000000000400a66 <+118>:	cmpq   $0x0,-0x88(%rbp)                ; failed to open log_file ?
    0x0000000000400a6e <+126>:	jne    0x400a91 <main+161>             ; jump past exit(1)
 
    0x0000000000400a70 <+128>:	mov    $0x400d7c,%eax                  ; "ERROR: Failed to open %s\n"
@@ -182,33 +182,43 @@ Dump of assembler code for function main:
 
 #### Read character from arg_file ####
 
-   0x0000000000400bee <+510>:	mov    -0x80(%rbp),%rax                ; 
-   0x0000000000400bf2 <+514>:	mov    %rax,%rdi                       ; 
-   0x0000000000400bf5 <+517>:	callq  0x400760 <fgetc@plt>            ; 
-   0x0000000000400bfa <+522>:	mov    %al,-0x71(%rbp)                 ; 
-   0x0000000000400bfd <+525>:	movzbl -0x71(%rbp),%eax                ; 
-   0x0000000000400c01 <+529>:	cmp    $0xff,%al                       ; 
-   0x0000000000400c03 <+531>:	jne    0x400bd5 <main+485>             ; 
-   0x0000000000400c05 <+533>:	mov    -0xa0(%rbp),%rax                ; 
-   0x0000000000400c0c <+540>:	add    $0x8,%rax                       ; 
-   0x0000000000400c10 <+544>:	mov    (%rax),%rdx                     ; 
-   0x0000000000400c13 <+547>:	mov    -0x88(%rbp),%rax                ; 
-   0x0000000000400c1a <+554>:	mov    $0x400dd2,%esi                  ; 
-   0x0000000000400c1f <+559>:	mov    %rax,%rdi                       ; 
-   0x0000000000400c22 <+562>:	callq  0x4008c4 <log_wrapper>          ; 
-   0x0000000000400c27 <+567>:	mov    -0x80(%rbp),%rax                ; 
-   0x0000000000400c2b <+571>:	mov    %rax,%rdi                       ; 
-   0x0000000000400c2e <+574>:	callq  0x400710 <fclose@plt>           ; 
-   0x0000000000400c33 <+579>:	mov    -0x78(%rbp),%eax                ; 
-   0x0000000000400c36 <+582>:	mov    %eax,%edi                       ; 
-   0x0000000000400c38 <+584>:	callq  0x400770 <close@plt>            ; 
-   0x0000000000400c3d <+589>:	mov    $0x0,%eax                       ; 
-   0x0000000000400c42 <+594>:	mov    -0x8(%rbp),%rdi                 ; 
-   0x0000000000400c46 <+598>:	xor    %fs:0x28,%rdi                   ; 
-   0x0000000000400c4f <+607>:	je     0x400c56 <main+614>             ; 
-   0x0000000000400c51 <+609>:	callq  0x400720 <__stack_chk_fail@plt> ; 
-   0x0000000000400c56 <+614>:	leaveq                                 ; 
-   0x0000000000400c57 <+615>:	retq                                   ; 
+   0x0000000000400bee <+510>:	mov    -0x80(%rbp),%rax                ; arg_file
+   0x0000000000400bf2 <+514>:	mov    %rax,%rdi                       ; arg_file
+   0x0000000000400bf5 <+517>:	callq  0x400760 <fgetc@plt>            ; c = fgetc(arg_file)
+   0x0000000000400bfa <+522>:	mov    %al,-0x71(%rbp)                 ; c
+   0x0000000000400bfd <+525>:	movzbl -0x71(%rbp),%eax                ; c
+   0x0000000000400c01 <+529>:	cmp    $0xff,%al                       ; c != 255 ?
+   0x0000000000400c03 <+531>:	jne    0x400bd5 <main+485>             ; jump back into write loop
+
+
+#### log_wrapper() Finish ####
+
+   0x0000000000400c05 <+533>:	mov    -0xa0(%rbp),%rax                ; argv
+   0x0000000000400c0c <+540>:	add    $0x8,%rax                       ; argv[1]
+   0x0000000000400c10 <+544>:	mov    (%rax),%rdx                     ; load arg 3 - argv[1]
+   0x0000000000400c13 <+547>:	mov    -0x88(%rbp),%rax                ; log_file
+   0x0000000000400c1a <+554>:	mov    $0x400dd2,%esi                  ; load arg 2 - "Finished back up "
+   0x0000000000400c1f <+559>:	mov    %rax,%rdi                       ; load arg 1 - log_file
+   0x0000000000400c22 <+562>:	callq  0x4008c4 <log_wrapper>          ; log_wrapper(log_file, "Finished back up ", argv[1]);
+
+
+#### Close ####
+
+   0x0000000000400c27 <+567>:	mov    -0x80(%rbp),%rax                ; arg_file
+   0x0000000000400c2b <+571>:	mov    %rax,%rdi                       ; load arg - arg_file
+   0x0000000000400c2e <+574>:	callq  0x400710 <fclose@plt>           ; fclose(arg_file);
+
+   0x0000000000400c33 <+579>:	mov    -0x78(%rbp),%eax                ; fd
+   0x0000000000400c36 <+582>:	mov    %eax,%edi                       ; load arg - fd
+   0x0000000000400c38 <+584>:	callq  0x400770 <close@plt>            ; close(fd);
+
+   0x0000000000400c3d <+589>:	mov    $0x0,%eax                       ; 0
+   0x0000000000400c42 <+594>:	mov    -0x8(%rbp),%rdi                 ; canary value
+   0x0000000000400c46 <+598>:	xor    %fs:0x28,%rdi                   ; test canary value
+   0x0000000000400c4f <+607>:	je     0x400c56 <main+614>             ; jump past stack overflow exit
+   0x0000000000400c51 <+609>:	callq  0x400720 <__stack_chk_fail@plt> ; stack overflow exit
+   0x0000000000400c56 <+614>:	leaveq                                 
+   0x0000000000400c57 <+615>:	retq                                   
 End of assembler dump.
 
 
