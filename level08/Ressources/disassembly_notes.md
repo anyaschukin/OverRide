@@ -220,26 +220,39 @@ Dump of assembler code for function main:
    0x0000000000400c56 <+614>:	leaveq                                 
    0x0000000000400c57 <+615>:	retq                                   
 End of assembler dump.
+```
 
-
-#### ---- log_wrapper() ---- ####
-
+### #### ---- log_wrapper() ---- ####
+```
 (gdb) disas log_wrapper
 Dump of assembler code for function log_wrapper:
-   0x00000000004008c4 <+0>:	push   %rbp                            ; 
-   0x00000000004008c5 <+1>:	mov    %rsp,%rbp                       ; 
-   0x00000000004008c8 <+4>:	sub    $0x130,%rsp                     ; 
-   0x00000000004008cf <+11>:	mov    %rdi,-0x118(%rbp)               ; 
-   0x00000000004008d6 <+18>:	mov    %rsi,-0x120(%rbp)               ; 
-   0x00000000004008dd <+25>:	mov    %rdx,-0x128(%rbp)               ; 
-   0x00000000004008e4 <+32>:	mov    %fs:0x28,%rax                   ; 
-   0x00000000004008ed <+41>:	mov    %rax,-0x8(%rbp)                 ; 
-   0x00000000004008f1 <+45>:	xor    %eax,%eax                       ; 
+   0x00000000004008c4 <+0>:	push   %rbp                            
+   0x00000000004008c5 <+1>:	mov    %rsp,%rbp                       
+
+
+#### Initialize Stack ####
+
+   0x00000000004008c8 <+4>:	sub    $0x130,%rsp                     ; allocate 304 bytes on stack for local variables
+   0x00000000004008cf <+11>:	mov    %rdi,-0x118(%rbp)               ; store arg 1 on local stack - file
+   0x00000000004008d6 <+18>:	mov    %rsi,-0x120(%rbp)               ; store arg 2 on local stack - message
+   0x00000000004008dd <+25>:	mov    %rdx,-0x128(%rbp)               ; store arg 3 on local stack - filename
+
+   0x00000000004008e4 <+32>:	mov    %fs:0x28,%rax                   ; canary value
+   0x00000000004008ed <+41>:	mov    %rax,-0x8(%rbp)                 ; store canary value at end of stack
+   0x00000000004008f1 <+45>:	xor    %eax,%eax                       ; clear register eax
+
+
+#### ####
+
    0x00000000004008f3 <+47>:	mov    -0x120(%rbp),%rdx               ; 
    0x00000000004008fa <+54>:	lea    -0x110(%rbp),%rax               ; 
    0x0000000000400901 <+61>:	mov    %rdx,%rsi                       ; 
    0x0000000000400904 <+64>:	mov    %rax,%rdi                       ; 
    0x0000000000400907 <+67>:	callq  0x4006f0 <strcpy@plt>           ; 
+
+
+#### ####
+
    0x000000000040090c <+72>:	mov    -0x128(%rbp),%rsi               ; 
    0x0000000000400913 <+79>:	lea    -0x110(%rbp),%rax               ; 
    0x000000000040091a <+86>:	movq   $0xffffffffffffffff,-0x130(%rbp); 
