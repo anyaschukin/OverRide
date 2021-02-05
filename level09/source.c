@@ -24,12 +24,14 @@ void	set_username(struct s_message *message)
 	puts(">: Enter your username");
 	printf(">>: ");
 	fgets(buffer, 128, stdin);
+
 	int		i = 0; /* rbp-0x4 */
 	while (i <= 40 && buffer[i] != 0)
 	{
 		message->username[i] = buffer[i];
 		i++;
 	}
+
 	printf(" %s", message->username);
 	return ;
 }
@@ -37,9 +39,9 @@ void	set_username(struct s_message *message)
 void	set_msg(struct s_message *message)
 {
 	char	buffer[1024]; /* rbp-0x400 */
-	bzero(buffer, 128 * 8);
+	bzero(buffer, 1024);
 	puts(">: Msg @Unix-Dude");
-	printf("Enter your username");
+	printf(">>: ");
 	fgets(buffer, 1024, stdin);
 	strncpy(message->message, buffer, message->len_message);
 	return ;
