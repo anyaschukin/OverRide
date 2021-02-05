@@ -170,15 +170,15 @@ Dump of assembler code for function set_username:
    0x0000000000000a7f <+178>:	jne    0xa46 <set_username+121>  ; jump back to start of copy loop
 
 
-#### printf username ####
+#### print "Welcome, <username>" ####
 
    0x0000000000000a81 <+180>:	mov    -0x98(%rbp),%rax          ; message
    0x0000000000000a88 <+187>:	lea    0x8c(%rax),%rdx           ; message->username
-   0x0000000000000a8f <+194>:	lea    0x165(%rip),%rax          # 0xbfb ; " %s"
+   0x0000000000000a8f <+194>:	lea    0x165(%rip),%rax          # 0xbfb ; ">: Welcome, %s"
    0x0000000000000a96 <+201>:	mov    %rdx,%rsi                 ; load arg 2 - message->username
-   0x0000000000000a99 <+204>:	mov    %rax,%rdi                 ; load arg 1 - " %s"
+   0x0000000000000a99 <+204>:	mov    %rax,%rdi                 ; load arg 1 - ">: Welcome, %s"
    0x0000000000000a9c <+207>:	mov    $0x0,%eax                 ; 0
-   0x0000000000000aa1 <+212>:	callq  0x750 <printf@plt>        ; printf(" %s", message->username);
+   0x0000000000000aa1 <+212>:	callq  0x750 <printf@plt>        ; printf(">: Welcome, %s", message->username);
 
    0x0000000000000aa6 <+217>:	leaveq
    0x0000000000000aa7 <+218>:	retq
