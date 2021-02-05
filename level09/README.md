@@ -63,3 +63,13 @@ end
 cat /home/users/end/.pass
 j4AunAPDXaJxxWjYEUxpanmvSgRDV3tpA5BEaBuE
 ```
+
+
+```
+level09@OverRide:~$ su end
+Password: j4AunAPDXaJxxWjYEUxpanmvSgRDV3tpA5BEaBuE
+end@OverRide:~$ ls
+end
+end@OverRide:~$ cat end
+GG !
+```
