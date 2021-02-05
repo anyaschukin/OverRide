@@ -80,6 +80,7 @@ Unfortunately, ```0xffffd832``` is too large to pass to ```printf()``` in decima
 4294957106 <- address of shellcode (in decimal)
 ```
 We can, however, pass it in decimal as 2 short ints (written on 2 bytes each). 
+
 Note: reverse order for little endian! 
 ```
 0xffffd832
@@ -87,7 +88,8 @@ Note: reverse order for little endian!
 0xffff -> 65535
 ```
 
-We are going to use our format string to overwrite the call to ```exit()```. 
+We are going to use our format string attack to overwrite the call to ```exit()```. 
+
 The GOT address of ```exit()``` is ```0x080497e0```.
 ```
 level05@OverRide:~$ gdb -q level05
