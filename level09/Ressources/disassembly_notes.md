@@ -251,7 +251,7 @@ End of assembler dump.
 Dump of assembler code for function secret_backdoor:
    0x000000000000088c <+0>:	push   %rbp
    0x000000000000088d <+1>:	mov    %rsp,%rbp
-   0x0000000000000890 <+4>:	add    $0xffffffffffffff80,%rsp  ; add a lot to stack
+   0x0000000000000890 <+4>:	add    $0xffffffffffffff80,%rsp
 
 
 #### Read from stdin ####
