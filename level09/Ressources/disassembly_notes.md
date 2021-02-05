@@ -28,32 +28,32 @@ Non-debugging symbols:
 0x00000000000007e0  __do_global_dtors_aux
 0x0000000000000860  frame_dummy
 0x000000000000088c  secret_backdoor       ; Uncalled secret_backdoor!!
-0x00000000000008c0  handle_msg
-0x0000000000000932  set_msg
-0x00000000000009cd  set_username
-0x0000000000000aa8  main
+0x00000000000008c0  handle_msg            ; called by main
+0x0000000000000932  set_msg               ; called by handle_msg
+0x00000000000009cd  set_username          ; called by handle_msg
+0x0000000000000aa8  main                  ; main
 0x0000000000000ad0  __libc_csu_init
 0x0000000000000b60  __libc_csu_fini
 0x0000000000000b70  __do_global_ctors_aux
 0x0000000000000ba8  _fini
 ```
 
-## main
+## main()
 ```
 (gdb) disas main
 Dump of assembler code for function main:
    0x0000000000000aa8 <+0>:	push   %rbp
    0x0000000000000aa9 <+1>:	mov    %rsp,%rbp
-   0x0000000000000aac <+4>:	lea    0x15d(%rip),%rdi        # 0xc10
-   0x0000000000000ab3 <+11>:	callq  0x730 <puts@plt>
-   0x0000000000000ab8 <+16>:	callq  0x8c0 <handle_msg>
-   0x0000000000000abd <+21>:	mov    $0x0,%eax
+   0x0000000000000aac <+4>:	lea    0x15d(%rip),%rdi    # 0xc10 ; x/s 0x555555554c10
+   0x0000000000000ab3 <+11>:	callq  0x730 <puts@plt>    ; puts('-' <repeats 44 times>, "\n|   ~Welcome to l33t-m$n ~    v1337        |\n", '-' <repeats 44 times>)
+   0x0000000000000ab8 <+16>:	callq  0x8c0 <handle_msg>  ; call handle_msg()
+   0x0000000000000abd <+21>:	mov    $0x0,%eax           ; load (0) for return(0)
    0x0000000000000ac2 <+26>:	pop    %rbp
    0x0000000000000ac3 <+27>:	retq
 End of assembler dump.
 ```
 
-## handle_msg
+## handle_msg()
 ```
 (gdb) disas handle_msg
 Dump of assembler code for function handle_msg:
@@ -81,7 +81,7 @@ Dump of assembler code for function handle_msg:
 End of assembler dump.
 ```
 
-## set_username
+## set_username()
 ```
 (gdb) disas set_username
 Dump of assembler code for function set_username:
@@ -138,7 +138,7 @@ Dump of assembler code for function set_username:
 End of assembler dump.
 ```
 
-## set_msg
+## set_msg()
 ```
 (gdb) disas set_msg
 Dump of assembler code for function set_msg:
@@ -179,7 +179,7 @@ Dump of assembler code for function set_msg:
 End of assembler dump.
 ```
 
-## secret_backdoor
+## secret_backdoor()
 ```
 (gdb) disas secret_backdoor
 Dump of assembler code for function secret_backdoor:
