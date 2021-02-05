@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
 
 struct	s_message
 {
@@ -18,7 +20,7 @@ void	secret_backdoor(void)
 void	set_username(struct s_message *message)
 {
 	char	buffer[128]; /* rbp-0x90 */
-	bzero(buffer, 1128);
+	bzero(buffer, 128);
 	puts(">: Enter your username");
 	printf(">>: ");
 	fgets(buffer, 128, stdin);
