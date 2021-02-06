@@ -31,8 +31,7 @@ We also see a call to ```exit()```.
 
 ### Build exploit
 
-Unfortunately, we see the stack is non-executable. <br />
-We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
+Unfortunately, we see the stack is non-executable. We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
 ```
 level05@OverRide:~$ dmesg | grep "Execute Disable"
 [    0.000000] NX (Execute Disable) protection: active
