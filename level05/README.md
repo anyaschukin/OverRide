@@ -65,7 +65,6 @@ Breakpoint 1 at 0x8048448
 Our malicious shellcode is at ```0xffffd822```. <br />
 Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide... so let's make the address of our shellcode ```0xffffd822 + 16 bytes -> 0xffffd832```.
 
-We are going to insert this malicious code using a ```printf()``` format string attack. <br />
 Unfortunately, ```0xffffd832``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
 ```
 2147483647 <- maximum size of int
