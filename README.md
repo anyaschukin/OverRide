@@ -1,6 +1,5 @@
 # Override
 
-
 Explore gdb disassembly and binary exploitation through 10 little challenges
 
 For each level:
@@ -29,9 +28,9 @@ For each level:
 
 * Level 7 - 
 
-* Level 8 - 
+* Level 8 - Binary backs up password via symlink
 
-* Level 9 - 
+* Level 9 - Off-by-one error
 
 ## Virtual Machine setup
 
