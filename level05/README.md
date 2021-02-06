@@ -25,16 +25,13 @@ hello
 
 Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level05/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-This program is a basic ```tolower()```, which is of little interest to us. 
-
-However we do see a call to ```printf()```, which is vulnerable to string format exploits. 
-
+This program is a basic ```tolower()```, which is of little interest to us. <br />
+However we do see a call to ```printf()```, which is vulnerable to string format exploits. <br />
 We also see a call to ```exit()```.
 
 ### Build exploit
 
-Unfortunately, we see the stack is non-executable. 
-
+Unfortunately, we see the stack is non-executable. <br />
 We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
 ```
 level05@OverRide:~$ dmesg | grep "Execute Disable"
@@ -101,14 +98,12 @@ level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
 aaaa 64 f7fcfac0 f7ec3af9 ffffd69f ffffd69e 0 ffffffff ffffd724 f7fdb000 61616161 20782520 25207825
 ```
 
-Looks good... Let's sum it all up! 
-
+Looks good... Let's sum it all up! <br />
 Our attack takes place in 2 steps:
 - malicious environment variable 
 ```
 "NOP slide [100 bytes] + call to open a shell"
 ```
-
 - format string attack
   - exit GOT address, split into two [4 byte] parts
   - shellcode address in decimal, split into two [4 byte] parts
