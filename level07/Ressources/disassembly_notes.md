@@ -416,7 +416,7 @@ Dump of assembler code for function store_number:
 #### Store input, return(0) ####
 
    0x080486c2 <+146>:	mov    -0xc(%ebp),%eax                 ; index
-   0x080486c5 <+149>:	shl    $0x2,%eax                       ; shift left 2
+   0x080486c5 <+149>:	shl    $0x2,%eax                       ; shift left 2 (index * 4)
    0x080486c8 <+152>:	add    0x8(%ebp),%eax                  ; tab[index]
    0x080486cb <+155>:	mov    -0x10(%ebp),%edx                ; input
    0x080486ce <+158>:	mov    %edx,(%eax)                     ; tab[index] = input;
