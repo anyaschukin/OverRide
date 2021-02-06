@@ -4,9 +4,9 @@
 
 struct	s_message
 {
-	char	message[140]; /* message */
-	char	username[40]; /* message+140 */
-	int		len_message; /* message+180 */
+	char	message[140]; /* message       */
+	char	username[40]; /* message + 140 */
+	int		len_message;  /* message + 180 */
 };
 
 void	secret_backdoor(void)
@@ -23,16 +23,20 @@ void	set_username(struct s_message *message)
 	bzero(buffer, 128);
 	puts(">: Enter your username");
 	printf(">>: ");
+
+	// Read stdin to buffer
 	fgets(buffer, 128, stdin);
 
+	// copy buffer to username
 	int		i = 0; /* rbp-0x4 */
-	while (i <= 40 && buffer[i] != 0)
+	while (i <= 40 && buffer[i] != 0) // off-by-one error
 	{
 		message->username[i] = buffer[i];
 		i++;
 	}
 
-	printf(" %s", message->username);
+	// Print Welcome, <username>
+	printf(">: Welcome, %s", message->username);
 	return ;
 }
 
