@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-
+Unprotected Data Array, Ret2Libc Attack
 
 ## Context
 
@@ -44,31 +44,26 @@ Input command: store
 
 ### main() overview
 
-Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-This program is a basic tolower(), which is of little interest to us.
-However we do see a call to printf(), which is vulnerable to string format exploits.
-We also see a call to exit().
+The program erases arguments and environment variables, thus protecting against:
+- passing malicious shellcode as arguments to the program
+- storing malicious shellcode in environment variables
 
-Protects Against:
-- arguments to the program
-- environment variables
-The program erases arguments to it and environment variables, which means we can't pass a shellcode as argument or store one in an environment variable. 
+Vulnerability: no check performed on the index and unsigned int table is stored on the stack. This means we can read and store in stack memory. 
 
-Vulnerability: no check performed on the index and unsigned int table is stored on the stack. This means we can read or store in stack memory. 
-
-- program creates a table, in which it stores values at indexes
+We know the following:
+- the program creates a data table, where it stores numbers at indexes
 - some indexes (index % 3 == 0) are protected
-- going to overwrite EIP at table index, for ret2libc
 
-1) find table index of EIP (answer is 114)
-2) index 114 is protected. Need to use maxint overflow to access
-3) find the address of bin/sh
+Our plan is to do a ret2libc attack, by overwriting the index containing EIP with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```. 
+
+1) find the address of system, exit, bin/sh
+2) find table index of EIP (answer is 114)
+3) index 114 is protected. Need to use maxint overflow to access
 4) exploit by inputting malicious number + index to running program
 
-
-Let's do a ret2libc attack, by overwriting the EIP return address with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```.
-First, we have to find those addresses. 
+Let's do step 1. 
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -96,7 +91,12 @@ Ok, here are our addresses:
 - ```exit()``` is at 0xf7e5eb70
 - ```"/bin/sh"``` is at 0xf7f897ec Note: we will flip these for little endian!
 
-Next, let's find the EIP return address in the ```main()``` function. 
+Let's do step 2. 
+We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
+
+The table's address is 
+
+EIP's return address in the ```main()``` function is ```0xffffd6bc```.
 ```
 (gdb) info frame
 Stack level 0, frame at 0xffffd6c0:
@@ -112,6 +112,14 @@ We're going to write our payload at the address of EIP.
 [ address of EIP ] = [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
    0xffffd6bc           0xf7e6aed0           0xf7e5eb70             0xf7f897ec
 ```
+
+
+
+
+
+
+
+
 
 
 
