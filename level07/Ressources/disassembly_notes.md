@@ -397,31 +397,31 @@ Dump of assembler code for function store_number:
    0x0804868a <+90>:	mov    -0x10(%ebp),%eax                ; input
    0x0804868d <+93>:	shr    $0x18,%eax                      ; shift right 24
    0x08048690 <+96>:	cmp    $0xb7,%eax                      ; == 183 ?
-   0x08048695 <+101>:	jne    0x80486c2 <store_number+146> ; jump past puts
+   0x08048695 <+101>:	jne    0x80486c2 <store_number+146>    ; jump past puts
 
 
 #### Print Error index reserved for wil!, return(1) ####
 
-   0x08048697 <+103>:	movl   $0x8048ae6,(%esp)            ; " *** ERROR! ***"
-   0x0804869e <+110>:	call   0x80484c0 <puts@plt>         ; puts(" *** ERROR! ***")
-   0x080486a3 <+115>:	movl   $0x8048af8,(%esp)            ; "   This index is reserved for wil!"
-   0x080486aa <+122>:	call   0x80484c0 <puts@plt>         ; puts("   This index is reserved for wil!")
-   0x080486af <+127>:	movl   $0x8048ae6,(%esp)            ; " *** ERROR! ***"
-   0x080486b6 <+134>:	call   0x80484c0 <puts@plt>         ; puts(" *** ERROR! ***")
+   0x08048697 <+103>:	movl   $0x8048ae6,(%esp)               ; " *** ERROR! ***"
+   0x0804869e <+110>:	call   0x80484c0 <puts@plt>            ; puts(" *** ERROR! ***")
+   0x080486a3 <+115>:	movl   $0x8048af8,(%esp)               ; "   This index is reserved for wil!"
+   0x080486aa <+122>:	call   0x80484c0 <puts@plt>            ; puts("   This index is reserved for wil!")
+   0x080486af <+127>:	movl   $0x8048ae6,(%esp)               ; " *** ERROR! ***"
+   0x080486b6 <+134>:	call   0x80484c0 <puts@plt>            ; puts(" *** ERROR! ***")
 
-   0x080486bb <+139>:	mov    $0x1,%eax                    ; load (1) for return(1)
-   0x080486c0 <+144>:	jmp    0x80486d5 <store_number+165> ; jump to return(1)
+   0x080486bb <+139>:	mov    $0x1,%eax                       ; load (1) for return(1)
+   0x080486c0 <+144>:	jmp    0x80486d5 <store_number+165>    ; jump to return(1)
 
 
 #### Store input, return(0) ####
 
-   0x080486c2 <+146>:	mov    -0xc(%ebp),%eax              ; index
-   0x080486c5 <+149>:	shl    $0x2,%eax                    ; shift left 2
-   0x080486c8 <+152>:	add    0x8(%ebp),%eax               ; tab[index]
-   0x080486cb <+155>:	mov    -0x10(%ebp),%edx             ; input
-   0x080486ce <+158>:	mov    %edx,(%eax)                  ; tab[index] = input;
+   0x080486c2 <+146>:	mov    -0xc(%ebp),%eax                 ; index
+   0x080486c5 <+149>:	shl    $0x2,%eax                       ; shift left 2
+   0x080486c8 <+152>:	add    0x8(%ebp),%eax                  ; tab[index]
+   0x080486cb <+155>:	mov    -0x10(%ebp),%edx                ; input
+   0x080486ce <+158>:	mov    %edx,(%eax)                     ; tab[index] = input;
 
-   0x080486d0 <+160>:	mov    $0x0,%eax                    ; load (0) for return(0)
+   0x080486d0 <+160>:	mov    $0x0,%eax                       ; load (0) for return(0)
    0x080486d5 <+165>:	leave
    0x080486d6 <+166>:	ret
 End of assembler dump.
