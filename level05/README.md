@@ -6,7 +6,7 @@
 
 ## Context
 
-We find a binary with owner ```level05``` and SUID.
+We find a binary with owner ```level06``` and SUID.
 ```
 level05@OverRide:~$ ls -l
 -rwsr-s---+ 1 level06 users 5176 Sep 10  2016 level05
