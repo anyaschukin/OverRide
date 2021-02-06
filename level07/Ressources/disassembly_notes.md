@@ -465,3 +465,23 @@ Dump of assembler code for function get_unum:
    0x0804861e <+55>:	ret
 End of assembler dump.
 ```
+
+## clear_stdin()
+```
+Dump of assembler code for function clear_stdin:
+   0x080485c4 <+0>:	push   %ebp
+   0x080485c5 <+1>:	mov    %esp,%ebp
+   0x080485c7 <+3>:	sub    $0x18,%esp                   ; allocate 40 bytes on stack for local variables
+   0x080485ca <+6>:	movb   $0x0,-0x9(%ebp)              ; char x = 0;
+   0x080485ce <+10>:	jmp    0x80485d1 <clear_stdin+13>   ; jump into clear loop
+   0x080485d0 <+12>:	nop
+   0x080485d1 <+13>:	call   0x8048490 <getchar@plt>      ; getchar()
+   0x080485d6 <+18>:	mov    %al,-0x9(%ebp)               ; x = getchar()
+   0x080485d9 <+21>:	cmpb   $0xa,-0x9(%ebp)              ; x = "\n" ?
+   0x080485dd <+25>:	je     0x80485e5 <clear_stdin+33>   ; jump to return
+   0x080485df <+27>:	cmpb   $0xff,-0x9(%ebp)             ; x = EOF ?
+   0x080485e3 <+31>:	jne    0x80485d0 <clear_stdin+12>   ; jump back to start of clear loop
+   0x080485e5 <+33>:	leave
+   0x080485e6 <+34>:	ret
+End of assembler dump.
+```
