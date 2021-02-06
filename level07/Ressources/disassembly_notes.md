@@ -143,13 +143,10 @@ Dump of assembler code for function main:
    0x08048841 <+286>:	jne    0x80487f6 <main+211>             ; jump back to start of loop
 
 
-#### Print Welcome ####
+#### Print Welcome, Input command ####
 
    0x08048843 <+288>:	movl   $0x8048b38,(%esp)                ; '-' <repeats 52 times>, "\n  Welcome to wil's crappy number storage service!   \n", '-' <repeats 52 times>, "\n Commands:", ' ' <repeats 31 times>...
    0x0804884a <+295>:	call   0x80484c0 <puts@plt>             ; puts Welcome
-
-
-#### Command Loop ####
 
    0x0804884f <+300>:	mov    $0x8048d4b,%eax                  ; "Input command: "
    0x08048854 <+305>:	mov    %eax,(%esp)                      ; "Input command: "
@@ -201,82 +198,100 @@ Dump of assembler code for function main:
    0x080488df <+444>:	test   %eax,%eax                        ; strncmp("store", buffer, 5) = 0 ?
    0x080488e1 <+446>:	jne    0x80488f8 <main+469>             ; jump past call store_number()
 
-   0x080488e3 <+448>:	lea    0x24(%esp),%eax                  ; 
-   0x080488e7 <+452>:	mov    %eax,(%esp)                      ; 
-   0x080488ea <+455>:	call   0x8048630 <store_number>         ; 
-   0x080488ef <+460>:	mov    %eax,0x1b4(%esp)                 ; 
-   0x080488f6 <+467>:	jmp    0x8048965 <main+578>             ; 
+   0x080488e3 <+448>:	lea    0x24(%esp),%eax                  ; tab
+   0x080488e7 <+452>:	mov    %eax,(%esp)                      ; load arg - tab
+   0x080488ea <+455>:	call   0x8048630 <store_number>         ; ret = store_number(tab)
+   0x080488ef <+460>:	mov    %eax,0x1b4(%esp)                 ; store return
+   0x080488f6 <+467>:	jmp    0x8048965 <main+578>             ; jump to end of else command strncmp
 
 
 #### Command = read ? ####
 
-   0x080488f8 <+469>:	lea    0x1b8(%esp),%eax                 ; 
-   0x080488ff <+476>:	mov    %eax,%edx                        ; 
-   0x08048901 <+478>:	mov    $0x8048d61,%eax                  ; 
-   0x08048906 <+483>:	mov    $0x4,%ecx                        ; 
-   0x0804890b <+488>:	mov    %edx,%esi                        ; 
-   0x0804890d <+490>:	mov    %eax,%edi                        ; 
-   0x0804890f <+492>:	repz cmpsb %es:(%edi),%ds:(%esi)        ; 
-   0x08048911 <+494>:	seta   %dl                              ; 
-   0x08048914 <+497>:	setb   %al                              ; 
-   0x08048917 <+500>:	mov    %edx,%ecx                        ; 
-   0x08048919 <+502>:	sub    %al,%cl                          ; 
-   0x0804891b <+504>:	mov    %ecx,%eax                        ; 
-   0x0804891d <+506>:	movsbl %al,%eax                         ; 
-   0x08048920 <+509>:	test   %eax,%eax                        ; 
-   0x08048922 <+511>:	jne    0x8048939 <main+534>             ; 
-   0x08048924 <+513>:	lea    0x24(%esp),%eax                  ; 
-   0x08048928 <+517>:	mov    %eax,(%esp)                      ; 
-   0x0804892b <+520>:	call   0x80486d7 <read_number>          ; 
-   0x08048930 <+525>:	mov    %eax,0x1b4(%esp)                 ; 
-   0x08048937 <+532>:	jmp    0x8048965 <main+578>             ; 
+   0x080488f8 <+469>:	lea    0x1b8(%esp),%eax                 ; buffer
+   0x080488ff <+476>:	mov    %eax,%edx                        ; buffer
+   0x08048901 <+478>:	mov    $0x8048d61,%eax                  ; "read"
+   0x08048906 <+483>:	mov    $0x4,%ecx                        ; 4 (bytes len for strncmp)
+   0x0804890b <+488>:	mov    %edx,%esi                        ; buffer
+   0x0804890d <+490>:	mov    %eax,%edi                        ; "read"
+   0x0804890f <+492>:	repz cmpsb %es:(%edi),%ds:(%esi)        ; strncmp("read", buffer, 4)
+   0x08048911 <+494>:	seta   %dl                              ; compare
+   0x08048914 <+497>:	setb   %al                              ; compare
+   0x08048917 <+500>:	mov    %edx,%ecx                        ; compare
+   0x08048919 <+502>:	sub    %al,%cl                          ; compare
+   0x0804891b <+504>:	mov    %ecx,%eax                        ; result
+   0x0804891d <+506>:	movsbl %al,%eax                         ; result
+   0x08048920 <+509>:	test   %eax,%eax                        ; strncmp("read", buffer, 4) = 0 ?
+   0x08048922 <+511>:	jne    0x8048939 <main+534>             ; jump past call read_number()
 
-   0x08048939 <+534>:	lea    0x1b8(%esp),%eax                 ; 
-   0x08048940 <+541>:	mov    %eax,%edx                        ; 
-   0x08048942 <+543>:	mov    $0x8048d66,%eax                  ; 
-   0x08048947 <+548>:	mov    $0x4,%ecx                        ; 
-   0x0804894c <+553>:	mov    %edx,%esi                        ; 
-   0x0804894e <+555>:	mov    %eax,%edi                        ; 
-   0x08048950 <+557>:	repz cmpsb %es:(%edi),%ds:(%esi)        ; 
-   0x08048952 <+559>:	seta   %dl                              ; 
-   0x08048955 <+562>:	setb   %al                              ; 
-   0x08048958 <+565>:	mov    %edx,%ecx                        ; 
-   0x0804895a <+567>:	sub    %al,%cl                          ; 
-   0x0804895c <+569>:	mov    %ecx,%eax                        ; 
-   0x0804895e <+571>:	movsbl %al,%eax                         ; 
-   0x08048961 <+574>:	test   %eax,%eax                        ; 
-   0x08048963 <+576>:	je     0x80489cf <main+684>             ; 
+   0x08048924 <+513>:	lea    0x24(%esp),%eax                  ; tab
+   0x08048928 <+517>:	mov    %eax,(%esp)                      ; load arg - tab
+   0x0804892b <+520>:	call   0x80486d7 <read_number>          ; ret = read_number(tab)
+   0x08048930 <+525>:	mov    %eax,0x1b4(%esp)                 ; store return
+   0x08048937 <+532>:	jmp    0x8048965 <main+578>             ; jump to end of else command strncmp
 
-   0x08048965 <+578>:	cmpl   $0x0,0x1b4(%esp)                 ; 
-   0x0804896d <+586>:	je     0x8048989 <main+614>             ; 
 
-   0x0804896f <+588>:	mov    $0x8048d6b,%eax                  ; 
-   0x08048974 <+593>:	lea    0x1b8(%esp),%edx                 ; 
-   0x0804897b <+600>:	mov    %edx,0x4(%esp)                   ; 
-   0x0804897f <+604>:	mov    %eax,(%esp)                      ;  
-   0x08048982 <+607>:	call   0x8048470 <printf@plt>           ; 
-   0x08048987 <+612>:	jmp    0x80489a1 <main+638>             ; 
+#### Command = quit ? ####
 
-   0x08048989 <+614>:	mov    $0x8048d88,%eax                  ; 
-   0x0804898e <+619>:	lea    0x1b8(%esp),%edx                 ; 
-   0x08048995 <+626>:	mov    %edx,0x4(%esp)                   ; 
-   0x08048999 <+630>:	mov    %eax,(%esp)                      ; 
-   0x0804899c <+633>:	call   0x8048470 <printf@plt>           ; 
+   0x08048939 <+534>:	lea    0x1b8(%esp),%eax                 ; buffer
+   0x08048940 <+541>:	mov    %eax,%edx                        ; buffer
+   0x08048942 <+543>:	mov    $0x8048d66,%eax                  ; "quit"
+   0x08048947 <+548>:	mov    $0x4,%ecx                        ; 4 (bytes len for strncmp)
+   0x0804894c <+553>:	mov    %edx,%esi                        ; buffer
+   0x0804894e <+555>:	mov    %eax,%edi                        ; "quit"
+   0x08048950 <+557>:	repz cmpsb %es:(%edi),%ds:(%esi)        ; strncmp("quit", buffer, 4)
+   0x08048952 <+559>:	seta   %dl                              ; compare
+   0x08048955 <+562>:	setb   %al                              ; compare
+   0x08048958 <+565>:	mov    %edx,%ecx                        ; compare
+   0x0804895a <+567>:	sub    %al,%cl                          ; compare
+   0x0804895c <+569>:	mov    %ecx,%eax                        ; result
+   0x0804895e <+571>:	movsbl %al,%eax                         ; result
+   0x08048961 <+574>:	test   %eax,%eax                        ; strncmp("read", buffer, 4) = 0 ?
+   0x08048963 <+576>:	je     0x80489cf <main+684>             ; jump to return(0)
 
-   0x080489a1 <+638>:	lea    0x1b8(%esp),%eax                 ; 
-   0x080489a8 <+645>:	movl   $0x0,(%eax)                      ; 
-   0x080489ae <+651>:	movl   $0x0,0x4(%eax)                   ; 
-   0x080489b5 <+658>:	movl   $0x0,0x8(%eax)                   ;  
-   0x080489bc <+665>:	movl   $0x0,0xc(%eax)                   ; 
-   0x080489c3 <+672>:	movl   $0x0,0x10(%eax)                  ; 
-   0x080489ca <+679>:	jmp    0x804884f <main+300>             ; 
+
+#### Command Fail / Success ####
+
+   0x08048965 <+578>:	cmpl   $0x0,0x1b4(%esp)                 ; ret = 0 ?
+   0x0804896d <+586>:	je     0x8048989 <main+614>             ; jump to Success
+
+   0x0804896f <+588>:	mov    $0x8048d6b,%eax                  ; " Failed to do %s command\n"
+   0x08048974 <+593>:	lea    0x1b8(%esp),%edx                 ; buffer
+   0x0804897b <+600>:	mov    %edx,0x4(%esp)                   ; load arg 2 - buffer
+   0x0804897f <+604>:	mov    %eax,(%esp)                      ; load arg 1 - " Failed to do %s command\n"
+   0x08048982 <+607>:	call   0x8048470 <printf@plt>           ; printf(" Failed to do %s command\n", buffer);
+   0x08048987 <+612>:	jmp    0x80489a1 <main+638>             ; jump to bzero return(0)
+
+   0x08048989 <+614>:	mov    $0x8048d88,%eax                  ; " Completed %s command successfully\n"
+   0x0804898e <+619>:	lea    0x1b8(%esp),%edx                 ; buffer
+   0x08048995 <+626>:	mov    %edx,0x4(%esp)                   ; load arg 2 - buffer
+   0x08048999 <+630>:	mov    %eax,(%esp)                      ; load arg 1 - " Completed %s command successfully\n"
+   0x0804899c <+633>:	call   0x8048470 <printf@plt>           ; printf(" Completed %s command successfully\n", buffer);
+
+
+#### Flush buffer ####
+
+   0x080489a1 <+638>:	lea    0x1b8(%esp),%eax                 ; buffer
+   0x080489a8 <+645>:	movl   $0x0,(%eax)                      ; bzero(buffer, 20);
+   0x080489ae <+651>:	movl   $0x0,0x4(%eax)                   ; bzero(buffer, 20);
+   0x080489b5 <+658>:	movl   $0x0,0x8(%eax)                   ; bzero(buffer, 20);
+   0x080489bc <+665>:	movl   $0x0,0xc(%eax)                   ; bzero(buffer, 20);
+   0x080489c3 <+672>:	movl   $0x0,0x10(%eax)                  ; bzero(buffer, 20);
+
+
+#### Command Loop, jump back ####
+
+   0x080489ca <+679>:	jmp    0x804884f <main+300>             ; jump back to start of command loop
    0x080489cf <+684>:	nop
-   0x080489d0 <+685>:	mov    $0x0,%eax                        ; 
-   0x080489d5 <+690>:	mov    0x1cc(%esp),%esi                 ; 
-   0x080489dc <+697>:	xor    %gs:0x14,%esi                    ; 
-   0x080489e3 <+704>:	je     0x80489ea <main+711>             ; 
-   0x080489e5 <+706>:	call   0x80484b0 <__stack_chk_fail@plt> ; 
-   0x080489ea <+711>:	lea    -0xc(%ebp),%esp                  ; 
+
+
+#### Return ####
+
+   0x080489d0 <+685>:	mov    $0x0,%eax                        ; 0
+   0x080489d5 <+690>:	mov    0x1cc(%esp),%esi                 ; load stored canary value
+   0x080489dc <+697>:	xor    %gs:0x14,%esi                    ; load original canary value
+   0x080489e3 <+704>:	je     0x80489ea <main+711>             ; jump past stack overflow exit
+   0x080489e5 <+706>:	call   0x80484b0 <__stack_chk_fail@plt> ; stack overflow exit
+   0x080489ea <+711>:	lea    -0xc(%ebp),%esp
 
    0x080489ed <+714>:	pop    %ebx
    0x080489ee <+715>:	pop    %esi
