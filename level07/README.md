@@ -120,15 +120,28 @@ Stack level 0, frame at 0xffffd6c0:
 
 Next, we need to calculate the 'index' of our EIP address. 
 ```
-0xffffd63c   -   0xffffd474    =    int(0x1c8)  =  456
-eip_address     table_address                    [bytes]
+  0xffffd63c   -    0xffffd474    =    int(0x1c8)  =   456
+[eip_address]     [table_address]                    [bytes]
 
-456 / 4  =  114
-          index in table
+456 / 4   =   114
+          [index in table]
 
 114 % 3 = 0
 ```
+Ah... Index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
 
+On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index\*4]```. 
+Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
+```
+0x100000000 = 2^32
+[size of uintmax]
+
+(2^32 / 4) + 114 = 1073741938
+                  [stores at index 114]
+
+1073741938 % 3 = 1
+               [ this index is unprotected! ]
+```
 
 We're going to write our payload at the address of EIP. 
 ```
