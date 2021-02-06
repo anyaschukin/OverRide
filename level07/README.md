@@ -18,6 +18,12 @@ When run ...!!!!!
 
 ## Solution
 
+Protects Against:
+- arguments to the program
+- environment variables
+
+Vulnerability: no check performed on the index and unsigned int table is stored on the stack. This means we can read or store in stack memory. 
+
 - program creates a table, in which it stores values at indexes
 - some indexes (index % 3 == 0) are protected
 - going to overwrite EIP at table index, for ret2libc
