@@ -4,14 +4,14 @@
 
 struct	s_message
 {
-	char	message[140]; /* message       */
-	char	username[40]; /* message + 140 */
-	int		len_message;  /* message + 180 */
+	char	message[140]; // message
+	char	username[40]; // message + 140
+	int		len_message;  // message + 180
 };
 
 void	secret_backdoor(void)
 {
-	char	buffer[128]; /* rbp-0x80 */
+	char	buffer[128];
 	fgets(buffer, 128, stdin);
 	system(buffer);
 	return ;
@@ -19,7 +19,7 @@ void	secret_backdoor(void)
 
 void	set_username(struct s_message *message)
 {
-	char	buffer[128]; /* rbp-0x90 */
+	char	buffer[128];
 	bzero(buffer, 128);
 	puts(">: Enter your username");
 	printf(">>: ");
@@ -28,7 +28,7 @@ void	set_username(struct s_message *message)
 	fgets(buffer, 128, stdin);
 
 	// copy buffer to username
-	int		i = 0; /* rbp-0x4 */
+	int		i = 0;
 	while (i <= 40 && buffer[i] != 0) // off-by-one error
 	{
 		message->username[i] = buffer[i];
@@ -42,7 +42,7 @@ void	set_username(struct s_message *message)
 
 void	set_msg(struct s_message *message)
 {
-	char	buffer[1024]; /* rbp-0x400 */
+	char	buffer[1024];
 	bzero(buffer, 1024);
 	puts(">: Msg @Unix-Dude");
 	printf(">>: ");
@@ -53,7 +53,7 @@ void	set_msg(struct s_message *message)
 
 void	handle_msg(void)
 {
-	struct s_message	message; /* rbp-0xc0 */
+	struct s_message	message;
 	bzero(message.username, 40);
 	message.len_message = 140;
 	set_username(&message);
