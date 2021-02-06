@@ -12,7 +12,7 @@ level07@OverRide:~$ ls -l
 -rwsr-s---+ 1 level08 users 11744 Sep 10  2016 level07
 ```
 
-When run, the program takes a number and index as input which it stores or reads from a table.
+The program takes a number and index as input, which it stores or reads from a table.
 ```
 level07@OverRide:~$ ./level07
 ----------------------------------------------------
@@ -34,13 +34,20 @@ Input command: read
  Index: 1
  Number at data[1] is 42
  Completed read command successfully
+Input command: store
+ Number: -42
+ Index: 2
+ Completed store command successfully
 ```
 
 ## Solution
 
+### main() overview
+
 Protects Against:
 - arguments to the program
 - environment variables
+The program erases arguments to it and environment variables, which means we can't pass a shellcode as argument or store one in an environment variable. 
 
 Vulnerability: no check performed on the index and unsigned int table is stored on the stack. This means we can read or store in stack memory. 
 
