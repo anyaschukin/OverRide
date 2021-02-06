@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-Off-by-one error
+Off-by-one error allows buffer overflow
 
 ## Context
 
