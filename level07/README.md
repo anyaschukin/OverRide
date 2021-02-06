@@ -25,6 +25,7 @@ When run ...!!!!!
 1) find table index of EIP (answer is 114)
 2) index 114 is protected. Need to use maxint overflow to access
 3) find the address of bin/sh
+4) exploit by inputting malicious number + index to running program
 
 
 
