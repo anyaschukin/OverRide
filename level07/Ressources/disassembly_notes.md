@@ -32,9 +32,9 @@ Non-debugging symbols:
 0x08048510  _start
 0x08048540  __do_global_dtors_aux
 0x080485a0  frame_dummy
-0x080485c4  clear_stdin
-0x080485e7  get_unum                ; 
-0x0804861f  prog_timeout            ; 
+0x080485c4  clear_stdin             ; clear_stdin
+0x080485e7  get_unum                ; read number from stdin
+0x0804861f  prog_timeout
 0x08048630  store_number            ; store
 0x080486d7  read_number             ; read
 0x08048723  main                    ; main
