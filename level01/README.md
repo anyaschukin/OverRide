@@ -123,29 +123,4 @@ whoami
 level02
 cat /home/users/level02/.pass
 PwBLgNa8p8MTKW57S7zxVAQCxnCpV8JqTTs9XEBv
-``` 
-
-## Recreate Exploited Binary
-
-As user ```level02```, in ```/tmp```, create and compile ```level01_source.c```
-```
-level02@OverRide:/tmp$ gcc level01_source.c -o level01_source
-```
-
-Edit permissions including suid, then move the binary to home directory.
-```
-level02@OverRide:/tmp$ chmod u+s level01_source; chmod +wx ~; mv level01_source ~
-```
-
-Exit back to user ```level01``` and launch the program!
-```
-level01@OverRide:~$ ./level01_source
-********* ADMIN LOGIN PROMPT *********
-Enter Username:
-dat_wil
-verifying username....
-
-Enter Password:
-admin
-nope, incorrect password...
 ```
