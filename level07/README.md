@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-Unprotected Data Array, Ret2Libc Attack
+Ret2Libc Attack on Unprotected Data Array
 
 ## Context
 
@@ -46,13 +46,13 @@ Input command: store
 
 See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
-The program erases arguments and environment variables, thus protecting against:
+We can see the program erases arguments and environment variables, thus protecting against:
 - passing malicious shellcode as arguments to the program
 - storing malicious shellcode in environment variables
 
-Vulnerability: no check performed on the index and unsigned int table is stored on the stack. This means we can read and store in stack memory. 
+Vulnerability: no check is performed on the index and unsigned int table is stored on the stack. This means we can read and store in stack memory. 
 
-We know the following:
+We also know the following:
 - the program creates a data table, where it stores numbers at indexes
 - some indexes (index % 3 == 0) are protected
 
@@ -60,12 +60,12 @@ We know the following:
 
 Our plan is to do a ret2libc attack, by overwriting the index containing EIP with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```. 
 
-1) find the address of system, exit, bin/sh
-2) find table index of EIP (answer is 114)
-3) index 114 is protected. Need to use maxint overflow to access
-4) exploit by inputting malicious number + index to running program
+1) find the address of system, exit, /bin/sh
+2) calculate the 'index' of EIP
+3) use maxint overflow to access protected indexes
+4) run exploit by inputting malicious number + index to running program
 
-Let's do step 1. 
+Let's do **step 1**. 
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -89,11 +89,12 @@ warning: Unable to access target memory at 0xf7fd3b74, halting search.
 ```
 Ok, here are our addresses:
 
-- ```system()``` is at 0xf7e6aed0
-- ```exit()``` is at 0xf7e5eb70
-- ```"/bin/sh"``` is at 0xf7f897ec Note: we will flip these for little endian!
+- ```system()``` is at ```0xf7e6aed0```
+- ```exit()``` is at ```0xf7e5eb70```
+- ```"/bin/sh"``` is at ```0xf7f897ec```
 
-Let's do step 2. 
+
+Let's do **step 2**. 
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
 The table's address is ```0xffffd4f4```.
@@ -132,6 +133,7 @@ Next, we need to calculate the 'index' of our EIP address.
 ```
 Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
 
+**Step 3** <br />
 On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
 ```
@@ -143,7 +145,7 @@ Since the index is an unsigned int and multiplied by 4, we can overflow uintmax 
 
 1073741938 % 3 = 1
 ```
-Index 1073741938 is unprotected! 
+Index ```1073741938``` is unprotected! 
 
 Let's test it out by causing the program to segfault. 
 ```
