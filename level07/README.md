@@ -6,14 +6,34 @@
 
 ## Context
 
-We find a binary with owner ```level0X!!!``` and SUID.
+We find a binary with owner ```level08``` and SUID.
+```
+level07@OverRide:~$ ls -l
+-rwsr-s---+ 1 level08 users 11744 Sep 10  2016 level07
 ```
 
+When run, the program takes a number and index as input which it stores or reads from a table.
 ```
+level07@OverRide:~$ ./level07
+----------------------------------------------------
+  Welcome to wil's crappy number storage service!
+----------------------------------------------------
+ Commands:
+    store - store a number into the data storage
+    read  - read a number from the data storage
+    quit  - exit the program
+----------------------------------------------------
+   wil has reserved some storage :>
+----------------------------------------------------
 
-When run ...!!!!!
-```
-
+Input command: store
+ Number: 42
+ Index: 1
+ Completed store command successfully
+Input command: read
+ Index: 1
+ Number at data[1] is 42
+ Completed read command successfully
 ```
 
 ## Solution
