@@ -58,7 +58,7 @@ Segmentation fault (core dumped)
 ```
 Great, its segfaults.
 
-### Find offset
+### Find RSP offset
 
 Can we overflow and overwrite the return address with the address of ```secret_backdoor()```?
 
