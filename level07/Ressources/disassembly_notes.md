@@ -32,11 +32,11 @@ Non-debugging symbols:
 0x08048510  _start
 0x08048540  __do_global_dtors_aux
 0x080485a0  frame_dummy
-0x080485c4  clear_stdin             ; 
+0x080485c4  clear_stdin
 0x080485e7  get_unum                ; 
 0x0804861f  prog_timeout            ; 
-0x08048630  store_number            ; 
-0x080486d7  read_number             ; 
+0x08048630  store_number            ; store
+0x080486d7  read_number             ; read
 0x08048723  main                    ; main
 0x08048a00  __libc_csu_init
 0x08048a70  __libc_csu_fini
@@ -302,51 +302,43 @@ Dump of assembler code for function main:
 End of assembler dump.
 ```
 
-## clear_stdin()
-```
-(gdb) disas clear_stdin
-Dump of assembler code for function clear_stdin:
-   0x080485c4 <+0>:	push   %ebp
-   0x080485c5 <+1>:	mov    %esp,%ebp
-   0x080485c7 <+3>:	sub    $0x18,%esp
-   0x080485ca <+6>:	movb   $0x0,-0x9(%ebp)
-   0x080485ce <+10>:	jmp    0x80485d1 <clear_stdin+13>
-   0x080485d0 <+12>:	nop
-   0x080485d1 <+13>:	call   0x8048490 <getchar@plt>
-   0x080485d6 <+18>:	mov    %al,-0x9(%ebp)
-   0x080485d9 <+21>:	cmpb   $0xa,-0x9(%ebp)
-   0x080485dd <+25>:	je     0x80485e5 <clear_stdin+33>
-   0x080485df <+27>:	cmpb   $0xff,-0x9(%ebp)
-   0x080485e3 <+31>:	jne    0x80485d0 <clear_stdin+12>
-   0x080485e5 <+33>:	leave
-   0x080485e6 <+34>:	ret
-End of assembler dump.
-```
-
 ## read_number()
 ```
 (gdb) disas read_number
 Dump of assembler code for function read_number:
    0x080486d7 <+0>:	push   %ebp
    0x080486d8 <+1>:	mov    %esp,%ebp
-   0x080486da <+3>:	sub    $0x28,%esp
-   0x080486dd <+6>:	movl   $0x0,-0xc(%ebp)
-   0x080486e4 <+13>:	mov    $0x8048add,%eax
-   0x080486e9 <+18>:	mov    %eax,(%esp)
-   0x080486ec <+21>:	call   0x8048470 <printf@plt>
-   0x080486f1 <+26>:	call   0x80485e7 <get_unum>
-   0x080486f6 <+31>:	mov    %eax,-0xc(%ebp)
-   0x080486f9 <+34>:	mov    -0xc(%ebp),%eax
-   0x080486fc <+37>:	shl    $0x2,%eax
-   0x080486ff <+40>:	add    0x8(%ebp),%eax
-   0x08048702 <+43>:	mov    (%eax),%edx
-   0x08048704 <+45>:	mov    $0x8048b1b,%eax
-   0x08048709 <+50>:	mov    %edx,0x8(%esp)
-   0x0804870d <+54>:	mov    -0xc(%ebp),%edx
-   0x08048710 <+57>:	mov    %edx,0x4(%esp)
-   0x08048714 <+61>:	mov    %eax,(%esp)
-   0x08048717 <+64>:	call   0x8048470 <printf@plt>
-   0x0804871c <+69>:	mov    $0x0,%eax
+   0x080486da <+3>:	sub    $0x28,%esp             ; allocate 40 bytes on stack for local variables
+
+
+#### Print Index ####
+
+   0x080486dd <+6>:	movl   $0x0,-0xc(%ebp)        ; unsigned int input = 0;
+   0x080486e4 <+13>:	mov    $0x8048add,%eax        ; " Index: "
+   0x080486e9 <+18>:	mov    %eax,(%esp)            ; load arg - " Index: "
+   0x080486ec <+21>:	call   0x8048470 <printf@plt> ; printf(" Index: ");
+
+
+#### get_unum() ####
+
+   0x080486f1 <+26>:	call   0x80485e7 <get_unum>   ; get_unum()
+   0x080486f6 <+31>:	mov    %eax,-0xc(%ebp)        ; store return
+
+
+#### Print Number ####
+
+   0x080486f9 <+34>:	mov    -0xc(%ebp),%eax        ; get_unum() return
+   0x080486fc <+37>:	shl    $0x2,%eax              ; shift left 2
+   0x080486ff <+40>:	add    0x8(%ebp),%eax         ; tab[input]
+   0x08048702 <+43>:	mov    (%eax),%edx            ; tab[input]
+   0x08048704 <+45>:	mov    $0x8048b1b,%eax        ; " Number at data[%u] is %u\n"
+   0x08048709 <+50>:	mov    %edx,0x8(%esp)         ; load arg 3 - tab[input]
+   0x0804870d <+54>:	mov    -0xc(%ebp),%edx        ; input
+   0x08048710 <+57>:	mov    %edx,0x4(%esp)         ; load arg 2 - input
+   0x08048714 <+61>:	mov    %eax,(%esp)            ; load arg 1 - " Number at data[%u] is %u\n"
+   0x08048717 <+64>:	call   0x8048470 <printf@plt> ; printf(" Number at data[%u] is %u\n", input, tab[input]);
+
+   0x0804871c <+69>:	mov    $0x0,%eax              ; load (0) for return(0)
    0x08048721 <+74>:	leave
    0x08048722 <+75>:	ret
 End of assembler dump.
@@ -358,49 +350,78 @@ End of assembler dump.
 Dump of assembler code for function store_number:
    0x08048630 <+0>:	push   %ebp
    0x08048631 <+1>:	mov    %esp,%ebp
-   0x08048633 <+3>:	sub    $0x28,%esp
-   0x08048636 <+6>:	movl   $0x0,-0x10(%ebp)
-   0x0804863d <+13>:	movl   $0x0,-0xc(%ebp)
-   0x08048644 <+20>:	mov    $0x8048ad3,%eax
-   0x08048649 <+25>:	mov    %eax,(%esp)
-   0x0804864c <+28>:	call   0x8048470 <printf@plt>
-   0x08048651 <+33>:	call   0x80485e7 <get_unum>
-   0x08048656 <+38>:	mov    %eax,-0x10(%ebp)
-   0x08048659 <+41>:	mov    $0x8048add,%eax
-   0x0804865e <+46>:	mov    %eax,(%esp)
-   0x08048661 <+49>:	call   0x8048470 <printf@plt>
-   0x08048666 <+54>:	call   0x80485e7 <get_unum>
-   0x0804866b <+59>:	mov    %eax,-0xc(%ebp)
-   0x0804866e <+62>:	mov    -0xc(%ebp),%ecx
-   0x08048671 <+65>:	mov    $0xaaaaaaab,%edx
-   0x08048676 <+70>:	mov    %ecx,%eax
-   0x08048678 <+72>:	mul    %edx
-   0x0804867a <+74>:	shr    %edx
-   0x0804867c <+76>:	mov    %edx,%eax
-   0x0804867e <+78>:	add    %eax,%eax
-   0x08048680 <+80>:	add    %edx,%eax
-   0x08048682 <+82>:	mov    %ecx,%edx
-   0x08048684 <+84>:	sub    %eax,%edx
-   0x08048686 <+86>:	test   %edx,%edx
-   0x08048688 <+88>:	je     0x8048697 <store_number+103>
-   0x0804868a <+90>:	mov    -0x10(%ebp),%eax
-   0x0804868d <+93>:	shr    $0x18,%eax
-   0x08048690 <+96>:	cmp    $0xb7,%eax
-   0x08048695 <+101>:	jne    0x80486c2 <store_number+146>
-   0x08048697 <+103>:	movl   $0x8048ae6,(%esp)
-   0x0804869e <+110>:	call   0x80484c0 <puts@plt>
-   0x080486a3 <+115>:	movl   $0x8048af8,(%esp)
-   0x080486aa <+122>:	call   0x80484c0 <puts@plt>
-   0x080486af <+127>:	movl   $0x8048ae6,(%esp)
-   0x080486b6 <+134>:	call   0x80484c0 <puts@plt>
-   0x080486bb <+139>:	mov    $0x1,%eax
-   0x080486c0 <+144>:	jmp    0x80486d5 <store_number+165>
-   0x080486c2 <+146>:	mov    -0xc(%ebp),%eax
-   0x080486c5 <+149>:	shl    $0x2,%eax
-   0x080486c8 <+152>:	add    0x8(%ebp),%eax
-   0x080486cb <+155>:	mov    -0x10(%ebp),%edx
-   0x080486ce <+158>:	mov    %edx,(%eax)
-   0x080486d0 <+160>:	mov    $0x0,%eax
+
+
+#### Initialize Stack ####
+
+   0x08048633 <+3>:	sub    $0x28,%esp                      ; allocate 40 bytes on stack for local variables
+   0x08048636 <+6>:	movl   $0x0,-0x10(%ebp)                ; unsigned int input = 0;
+   0x0804863d <+13>:	movl   $0x0,-0xc(%ebp)                 ; unsigned int index = 0;
+
+
+#### Get Input ####
+
+   0x08048644 <+20>:	mov    $0x8048ad3,%eax                 ; " Number: "
+   0x08048649 <+25>:	mov    %eax,(%esp)                     ; load arg - " Number: "
+   0x0804864c <+28>:	call   0x8048470 <printf@plt>          ; printf(" Number: ");
+
+   0x08048651 <+33>:	call   0x80485e7 <get_unum>            ; get_unum()
+   0x08048656 <+38>:	mov    %eax,-0x10(%ebp)                ; input = get_unum()
+
+
+#### Get Index ####
+
+   0x08048659 <+41>:	mov    $0x8048add,%eax                 ; " Index: "
+   0x0804865e <+46>:	mov    %eax,(%esp)                     ; load arg - " Index: "
+   0x08048661 <+49>:	call   0x8048470 <printf@plt>          ; printf(" Index: ");
+
+   0x08048666 <+54>:	call   0x80485e7 <get_unum>            ; get_unum()
+   0x0804866b <+59>:	mov    %eax,-0xc(%ebp)                 ; index = get_unum()
+
+
+#### Check index & input ####
+
+   0x0804866e <+62>:	mov    -0xc(%ebp),%ecx                 ; index
+   0x08048671 <+65>:	mov    $0xaaaaaaab,%edx                ; 0xaaaaaaab
+   0x08048676 <+70>:	mov    %ecx,%eax                       ; index
+   0x08048678 <+72>:	mul    %edx                            ; index / 3
+   0x0804867a <+74>:	shr    %edx                            ; useless
+   0x0804867c <+76>:	mov    %edx,%eax                       ; useless
+   0x0804867e <+78>:	add    %eax,%eax                       ; useless
+   0x08048680 <+80>:	add    %edx,%eax                       ; useless
+   0x08048682 <+82>:	mov    %ecx,%edx                       ; useless
+   0x08048684 <+84>:	sub    %eax,%edx                       ; modulo
+   0x08048686 <+86>:	test   %edx,%edx                       ; index % 3 == 0 ?
+   0x08048688 <+88>:	je     0x8048697 <store_number+103>    ; jump to puts
+
+   0x0804868a <+90>:	mov    -0x10(%ebp),%eax                ; input
+   0x0804868d <+93>:	shr    $0x18,%eax                      ; shift right 24
+   0x08048690 <+96>:	cmp    $0xb7,%eax                      ; == 183 ?
+   0x08048695 <+101>:	jne    0x80486c2 <store_number+146> ; jump past puts
+
+
+#### Print Error index reserved for wil!, return(1) ####
+
+   0x08048697 <+103>:	movl   $0x8048ae6,(%esp)            ; " *** ERROR! ***"
+   0x0804869e <+110>:	call   0x80484c0 <puts@plt>         ; puts(" *** ERROR! ***")
+   0x080486a3 <+115>:	movl   $0x8048af8,(%esp)            ; "   This index is reserved for wil!"
+   0x080486aa <+122>:	call   0x80484c0 <puts@plt>         ; puts("   This index is reserved for wil!")
+   0x080486af <+127>:	movl   $0x8048ae6,(%esp)            ; " *** ERROR! ***"
+   0x080486b6 <+134>:	call   0x80484c0 <puts@plt>         ; puts(" *** ERROR! ***")
+
+   0x080486bb <+139>:	mov    $0x1,%eax                    ; load (1) for return(1)
+   0x080486c0 <+144>:	jmp    0x80486d5 <store_number+165> ; jump to return(1)
+
+
+#### Store input, return(0) ####
+
+   0x080486c2 <+146>:	mov    -0xc(%ebp),%eax              ; index
+   0x080486c5 <+149>:	shl    $0x2,%eax                    ; shift left 2
+   0x080486c8 <+152>:	add    0x8(%ebp),%eax               ; tab[index]
+   0x080486cb <+155>:	mov    -0x10(%ebp),%edx             ; input
+   0x080486ce <+158>:	mov    %edx,(%eax)                  ; tab[index] = input;
+
+   0x080486d0 <+160>:	mov    $0x0,%eax                    ; load (0) for return(0)
    0x080486d5 <+165>:	leave
    0x080486d6 <+166>:	ret
 End of assembler dump.
@@ -412,33 +433,35 @@ End of assembler dump.
 Dump of assembler code for function get_unum:
    0x080485e7 <+0>:	push   %ebp
    0x080485e8 <+1>:	mov    %esp,%ebp
-   0x080485ea <+3>:	sub    $0x28,%esp
-   0x080485ed <+6>:	movl   $0x0,-0xc(%ebp)
-   0x080485f4 <+13>:	mov    0x804a060,%eax
-   0x080485f9 <+18>:	mov    %eax,(%esp)
-   0x080485fc <+21>:	call   0x8048480 <fflush@plt>
-   0x08048601 <+26>:	mov    $0x8048ad0,%eax
-   0x08048606 <+31>:	lea    -0xc(%ebp),%edx
-   0x08048609 <+34>:	mov    %edx,0x4(%esp)
-   0x0804860d <+38>:	mov    %eax,(%esp)
-   0x08048610 <+41>:	call   0x8048500 <__isoc99_scanf@plt>
-   0x08048615 <+46>:	call   0x80485c4 <clear_stdin>
-   0x0804861a <+51>:	mov    -0xc(%ebp),%eax
+
+
+#### Initialize Stack ####
+
+   0x080485ea <+3>:	sub    $0x28,%esp                      ; allocate 40 bytes on stack for local variables
+   0x080485ed <+6>:	movl   $0x0,-0xc(%ebp)                 ; unsigned int input;
+
+
+#### Flush Stdout ####
+
+   0x080485f4 <+13>:	mov    0x804a060,%eax                  ; stdout
+   0x080485f9 <+18>:	mov    %eax,(%esp)                     ; load arg - stdout
+   0x080485fc <+21>:	call   0x8048480 <fflush@plt>          ; fflush(stdout)
+
+
+#### Read input ####
+
+   0x08048601 <+26>:	mov    $0x8048ad0,%eax                 ; "%u"
+   0x08048606 <+31>:	lea    -0xc(%ebp),%edx                 ; input
+   0x08048609 <+34>:	mov    %edx,0x4(%esp)                  ; load arg 2 - input
+   0x0804860d <+38>:	mov    %eax,(%esp)                     ; load arg 1 - "%u"
+   0x08048610 <+41>:	call   0x8048500 <__isoc99_scanf@plt>  ; scanf("%u", input);
+
+
+#### Return input ####
+
+   0x08048615 <+46>:	call   0x80485c4 <clear_stdin>         ; clear_stdin()
+   0x0804861a <+51>:	mov    -0xc(%ebp),%eax                 ; load (input) for return(input)
    0x0804861d <+54>:	leave
    0x0804861e <+55>:	ret
-End of assembler dump.
-```
-
-## prog_timeout()
-```
-(gdb) disas prog_timeout
-Dump of assembler code for function prog_timeout:
-   0x0804861f <+0>:	push   %ebp
-   0x08048620 <+1>:	mov    %esp,%ebp
-   0x08048622 <+3>:	mov    $0x1,%eax
-   0x08048627 <+8>:	mov    $0x1,%ebx
-   0x0804862c <+13>:	int    $0x80
-   0x0804862e <+15>:	pop    %ebp
-   0x0804862f <+16>:	ret
 End of assembler dump.
 ```
