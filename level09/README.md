@@ -60,7 +60,7 @@ Great, its segfaults.
 
 ### Find offset
 
-Can we overflow and overwrite the return address of ``` ``` with the address of ```secret_backdoor()```?
+Can we overflow and overwrite the return address with the address of ```secret_backdoor()```?
 
 Since the binary was compiled in 64-bit, RSP (not EIP) is the return address register.
 
