@@ -65,7 +65,7 @@ Our plan is to do a ret2libc attack, by overwriting the index containing EIP wit
 3) use maxint overflow to access protected indexes
 4) run exploit by inputting malicious number + index to running program
 
-**step 1**. 
+**step 1**
 ```
 level07@OverRide:~$ gdb -q level07
 
