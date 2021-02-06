@@ -12,10 +12,10 @@ level05@OverRide:~$ ls -l
 -rwsr-s---+ 1 level06 users 5176 Sep 10  2016 level05
 ```
 
-When run ...!!!!!
+The program takes input from the stdin, and prints the output in lowercase. 
 ```
 level05@OverRide:~$ ./level05
-hello
+HELLO
 hello
 ```
 
