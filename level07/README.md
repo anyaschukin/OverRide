@@ -63,7 +63,6 @@ Our plan is to do a ret2libc attack, by overwriting the index containing EIP wit
 2) calculate the 'index' of EIP
 3) use maxint overflow to access protected indexes
 4) run exploit by inputting malicious number + index to running program
-<br />
 
 ### Find the address of system, exit, bin/sh
 ```
@@ -92,7 +91,6 @@ Ok, here are our addresses:
 - ```system()``` is at ```0xf7e6aed0```
 - ```exit()``` is at ```0xf7e5eb70```
 - ```"/bin/sh"``` is at ```0xf7f897ec```
-<br />
 
 ### Calculate the 'index' of EIP
 
@@ -130,8 +128,7 @@ Next, we need to calculate the 'index' of our EIP address.
 
 114 % 3 = 0
 ```
-Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. <br /><br />
-
+Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index.
 
 ### Use maxint overflow to access protected indexes
 
@@ -161,7 +158,6 @@ Input command: quit
 Program received signal SIGSEGV, Segmentation fault.
 0x41414141 in ?? ()
 ```
-<br /> 
 
 ### Build exploit
 
