@@ -42,7 +42,7 @@ Input command: store
 
 ## Solution
 
-### main() overview
+### Overview
 
 See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
 
@@ -57,8 +57,6 @@ We also know the following:
 Vulnerability: no check is performed on indexes and an unsigned int table is stored on the stack. This means we can read and store in stack memory. 
 
 
-### Build exploit
-
 Our plan is to do a ret2libc attack, by overwriting the index containing EIP with a call to ```system()``` + ```exit()``` + ```"/bin/sh"```. 
 
 1) find the address of system, exit, bin/sh
@@ -67,7 +65,7 @@ Our plan is to do a ret2libc attack, by overwriting the index containing EIP wit
 4) run exploit by inputting malicious number + index to running program
 <br />
 
-**step 1** - find the address of system, exit, bin/sh
+### Find the address of system, exit, bin/sh
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -96,7 +94,8 @@ Ok, here are our addresses:
 - ```"/bin/sh"``` is at ```0xf7f897ec```
 <br />
 
-**step 2** - calculate the 'index' of EIP <br />
+### Calculate the 'index' of EIP
+
 Once we find the index in the table where we reach EIP, we can then store our payload there using ```store_number()```. 
 
 EIP's return address in the ```main()``` function is ```0xffffd6bc```.
@@ -134,7 +133,7 @@ Next, we need to calculate the 'index' of our EIP address.
 Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. <br /><br />
 
 
-**step 3** - use maxint overflow to access protected indexes
+### Use maxint overflow to access protected indexes
 
 On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
@@ -164,7 +163,7 @@ Program received signal SIGSEGV, Segmentation fault.
 ```
 <br /> 
 
-**step 4** - run exploit by inputting malicious number + index to running program
+### Build exploit
 
 Let's structure our exploit:
 ```
