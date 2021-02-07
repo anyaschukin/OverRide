@@ -50,11 +50,12 @@ We can see the program erases arguments and environment variables, thus protecti
 - passing malicious shellcode as arguments to the program
 - storing malicious shellcode in environment variables
 
-We do find a couple vulnerabilities: no check is performed on the index and an unsigned int table is stored on the stack. This means we can read and store in stack memory. 
-
 We also know the following:
 - the program creates a data table, where it stores numbers at indexes
 - some indexes (index % 3 == 0) are protected
+
+Vulnerability: no check is performed on indexes and an unsigned int table is stored on the stack. This means we can read and store in stack memory. 
+
 
 ### Build exploit
 
