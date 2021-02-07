@@ -132,9 +132,9 @@ Next, we need to calculate the 'index' of our EIP address.
 114 % 3 = 0
 ```
 Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
+<br />
 
-
-**Step 3** <br /> - use maxint overflow to access protected indexes
+**Step 3** - use maxint overflow to access protected indexes
 
 On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
