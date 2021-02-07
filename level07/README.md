@@ -162,8 +162,9 @@ Input command: quit
 Program received signal SIGSEGV, Segmentation fault.
 0x41414141 in ?? ()
 ```
+<br /> 
 
-**Step 4** <br /> - run exploit by inputting malicious number + index to running program
+**Step 4** - run exploit by inputting malicious number + index to running program
 
 Let's structure our exploit:
 ```
