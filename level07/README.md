@@ -96,8 +96,8 @@ Ok, here are our addresses:
 - ```"/bin/sh"``` is at ```0xf7f897ec```
 <br />
 
-**step 2** <br /> - calculate the 'index' of EIP
-We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
+**step 2** - calculate the 'index' of EIP <br />
+Once we find the index in the table where we reach EIP, we can then store our payload there using ```store_number()```. 
 
 EIP's return address in the ```main()``` function is ```0xffffd6bc```.
 ```
