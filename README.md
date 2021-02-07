@@ -8,25 +8,27 @@ For each level:
 
 * ```README.md``` how to find password for each level
 
-* ```source``` the reverse engineered binary
+* ```source.c``` the reverse engineered binary
+
+* ```Ressources/dissasembly_notes.md``` notes on asm 
 
 ## Levels Overview
 
 * Level 0 - Hardcoded password
 
-* Level 1 - 
+* Level 1 - Ret2Libc attack
 
 * Level 2 - printf() format string attack
 
-* Level 3 - 
+* Level 3 - Brute force password
 
 * Level 4 - gets() stack overflow + Return-to-libc attack
 
-* Level 5 - 
+* Level 5 - Shellcode in env variable + printf() format string attack
 
 * Level 6 - Hash value discoverable with gdb
 
-* Level 7 - 
+* Level 7 - Ret2Libc Attack on unprotected data table
 
 * Level 8 - Binary backs up password via symlink
 
