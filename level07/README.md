@@ -94,7 +94,7 @@ Ok, here are our addresses:
 - ```exit()``` is at ```0xf7e5eb70```
 - ```"/bin/sh"``` is at ```0xf7f897ec```
 
-
+<br />
 **step 2** <br />
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
