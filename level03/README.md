@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-Brute Force Password
+Brute force password
 
 ## Context
 
