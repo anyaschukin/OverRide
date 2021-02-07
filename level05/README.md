@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-Shellcode in Environment Variable + Printf String Format Attack
+Shellcode in environment variable + printf() format string attack
 
 ## Context
 
