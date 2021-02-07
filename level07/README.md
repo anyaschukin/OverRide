@@ -2,7 +2,7 @@
 
 ## Vulnerability
 
-Ret2Libc Attack on Unprotected Data Array
+Ret2Libc attack on unprotected data table
 
 ## Context
 
