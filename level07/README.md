@@ -98,6 +98,17 @@ Ok, here are our addresses:
 **step 2** <br />
 We need to find the index in the table where we reach EIP, and then store our payload there using ```store_number()```. 
 
+EIP's return address in the ```main()``` function is ```0xffffd6bc```.
+```
+(gdb) info frame
+Stack level 0, frame at 0xffffd6c0:
+ eip = 0x8048723 in main; saved eip 0xf7e45513
+ Arglist at unknown address.
+ Locals at unknown address, Previous frame's sp is 0xffffd6c0
+ Saved registers:
+  eip at 0xffffd6bc
+```
+
 The table's address is ```0xffffd4f4```.
 ```
 (gdb) b*store_number+6
@@ -111,16 +122,6 @@ $1 = (void *) 0xffffd4d0  # int *data
 0xffffd4d0:	0xffffd4f4  # data[0]
 ```
 
-EIP's return address in the ```main()``` function is ```0xffffd6bc```.
-```
-(gdb) info frame
-Stack level 0, frame at 0xffffd6c0:
- eip = 0x8048723 in main; saved eip 0xf7e45513
- Arglist at unknown address.
- Locals at unknown address, Previous frame's sp is 0xffffd6c0
- Saved registers:
-  eip at 0xffffd6bc
-```
 
 **Step 3** <br />
 Next, we need to calculate the 'index' of our EIP address. 
