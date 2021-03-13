@@ -12,6 +12,9 @@ For each level:
 
 * ```Ressources/dissasembly_notes.md``` notes on asm 
 
+See the [subject](https://github.com/anyashuka/Override/blob/master/subject.pdf) for more details.
+
+
 ## Levels Overview
 
 * Level 0 - Hardcoded password
