@@ -45,7 +45,7 @@ On Mac OSX, install VirtualBox and create a VM
 
 > New VM > settings > Network > Adapter 1 > Attached to: Bridged Adapter
 
-Mount the SnowCrash.iso to the VM:
+Mount the OverRide.iso to the VM:
 
 > New VM > settings > Storage > Under IDE Controller there is a CD icon with a + sign on it...
 
