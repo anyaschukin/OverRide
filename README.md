@@ -65,7 +65,7 @@ This means when we execute the binary *level00*, we do so with the permissions o
 
 We must find a vulnerability in the binary *level00* with gdb. Then exploit the vulnerability to run *system("/bin/sh")*, opening a shell as user *level1* where we have permissions to read the password.
 
-```cat /home/user/level01/.pass```
+```cat /home/users/level01/.pass```
 
 Then log in as user *level01*.
 
