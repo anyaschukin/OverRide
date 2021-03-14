@@ -102,17 +102,3 @@ For each level, we reverse engineered the original *source.c* by examining the g
 * [8](https://github.com/anyashuka/Override/tree/main/level08) - Binary backs up password via symlink
 
 * [9](https://github.com/anyashuka/Override/tree/main/level09) - Off-by-one error
-
-## Virtual Machine setup
-
-On Mac OSX, install VirtualBox and create a VM
-
-> New VM - Type : Linux - Version : (Oracle 64-bit)
-
-> New VM > settings > Network > Adapter 1 > Attached to: Bridged Adapter
-
-Mount the OverRide.iso to the VM:
-
-> New VM > settings > Storage > Under IDE Controller there is a CD icon with a + sign on it...
-
-> click on the CD then select OverRide.iso
