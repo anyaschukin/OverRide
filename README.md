@@ -10,7 +10,7 @@ In the folder for each level you will find:
 
 * *source.c* - the reverse engineered binary
 
-* *Ressources/dissasembly_notes.md* - notes on asm 
+* *dissasembly_notes.md* - notes on asm 
 
 See the [subject](https://github.com/anyashuka/Override/blob/main/subject.pdf) for more details.
 
