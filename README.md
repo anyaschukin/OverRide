@@ -63,7 +63,7 @@ In the home folder for user *level00* is a binary *level00* with SUID set and ow
 
 This means when we execute the binary *level00*, we do so with the permissions of user *level01*.
 
-We must find a vulnerability in the binary *level00* with gdb. Then exploit the vulnerability to run *system("/bin/sh")*, opening a shell as user *level1* where we have permissions to read the password.
+We must find a vulnerability in the binary *level00* with gdb. Then exploit the vulnerability to run *system("/bin/sh")*, opening a shell as user *level01* where we have permissions to read the password.
 
 ```cat /home/users/level01/.pass```
 
