@@ -12,7 +12,7 @@ In the folder for each level you will find:
 
 * *Ressources/dissasembly_notes.md* - notes on asm 
 
-See the [subject](https://github.com/anyashuka/Override/blob/master/subject.pdf) for more details.
+See the [subject](https://github.com/anyashuka/Override/blob/main/subject.pdf) for more details.
 
 
 #### Final Score 125/100
@@ -51,7 +51,7 @@ Log in from a separate shell as user *level00* with password *level00*.
 
 ```ssh level00@{VM_IP} -p 4242```
 
-<img src="https://github.com/anyashuka/Override/blob/master/img/ssh.png" width="800">
+<img src="https://github.com/anyashuka/Override/blob/main/img/ssh.png" width="800">
 
 ### Level Up
 
@@ -59,7 +59,7 @@ As user *level00* the goal is to read the password for user *level01*, found at 
 
 In the home folder for user *level00* is a binary *level00* with SUID set and owner *level01*.
 
-<img src="https://github.com/anyashuka/Override/blob/master/img/suid.png" width="400">
+<img src="https://github.com/anyashuka/Override/blob/main/img/suid.png" width="400">
 
 This means when we execute the binary *level00*, we do so with the permissions of user *level01*.
 
@@ -71,7 +71,7 @@ Then log in as user *level01*.
 
 ```su level01```
 
-<img src="https://github.com/anyashuka/Override/blob/master/img/su.png" width="330">
+<img src="https://github.com/anyashuka/Override/blob/main/img/su.png" width="330">
 
 Repeat for each level.
 
