@@ -55,7 +55,7 @@ Log in from a separate shell as user *level00* with password *level00*.
 
 ### Level Up
 
-As user *level00* the goal is to read the password for user *level01*, found at */home/user/level01/.pass*. However, user *level00* does not have permissions to read this file.
+As user *level00* the goal is to read the password for user *level01*, found at */home/users/level01/.pass*. However, user *level00* does not have permissions to read this file.
 
 In the home folder for user *level00* is a binary *level00* with SUID set and owner *level01*.
 
