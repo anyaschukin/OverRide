@@ -1,6 +1,6 @@
 # OverRide
 
-Explore disassembly, binary exploitation & reverse-engineering through 10 little challenges
+Explore disassembly, binary exploitation & reverse-engineering through 10 little challenges.
 
 In the folder for each level you will find:
 
