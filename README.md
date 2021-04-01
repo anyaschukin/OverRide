@@ -4,15 +4,17 @@ Explore disassembly, binary exploitation & reverse-engineering through 10 little
 
 In the folder for each level you will find:
 
-* *flag* - password for next level
-
-* *README.md* - how to find password
-
-* *source.c* - the reverse engineered binary
-
-* *dissasembly_notes.md* - notes on asm 
-
+* **flag** - password for next level
+ 
+* **README.md** - how to find password
+ 
+* **source.c** - the reverse engineered binary
+ 
+* **dissasembly_notes.md** - notes on asm 
+ 
 See the [subject](https://github.com/anyashuka/Override/blob/main/subject.pdf) for more details.
+
+For more gdb & exploitation fun check out the previous project [RainFall](https://github.com/anyaschukin/RainFall).
 
 
 #### Final Score 125/100
