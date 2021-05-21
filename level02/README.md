@@ -29,7 +29,7 @@ me! does not have access!
 
 ### main() overview
 
-Investigating with gdb we find no other functions apart from ```main()```. See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level02/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+Investigating with gdb we find no other functions apart from ```main()```. See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level02/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 First ```main()``` reads the correct password for user ```level03```, from the ```/home/users/level03/.pass``` file, into a variable on the stack.
 

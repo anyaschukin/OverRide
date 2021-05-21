@@ -27,7 +27,7 @@ Invalid Password
 
 ### main() overview
 
-Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level03/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level03/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 Main() prompts for a password with ```printf()``` and reads from the stdin with ```scanf()```.
 

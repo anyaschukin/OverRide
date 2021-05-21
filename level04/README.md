@@ -31,7 +31,7 @@ Then ```gets()``` reads stdin into a buffer.
 
 Finally the child process is killed if it makes a syscall to exec().
 
-See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level04/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level04/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ### Find EIP offset
 

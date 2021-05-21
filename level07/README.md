@@ -44,7 +44,7 @@ Input command: store
 
 ### Overview
 
-See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level07/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 We can see the program erases arguments and environment variables, thus protecting against:
 - passing malicious shellcode as arguments to the program

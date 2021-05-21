@@ -33,7 +33,7 @@ level00@OverRide:~$
 
 ## Solution
 
-Investigating with ```gdb``` we find no other functions apart from ```main()```. ```main()``` calls ```scanf()``` to read the password from stdin, then compares given password with value ```0x149c``` (5276 in decimal). If given password = 5276, a call to ```system()``` opens a shell. See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level00/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+Investigating with ```gdb``` we find no other functions apart from ```main()```. ```main()``` calls ```scanf()``` to read the password from stdin, then compares given password with value ```0x149c``` (5276 in decimal). If given password = 5276, a call to ```system()``` opens a shell. See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level00/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 Using password 5276:
 ```

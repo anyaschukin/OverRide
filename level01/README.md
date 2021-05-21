@@ -26,7 +26,7 @@ nope, incorrect username...
 
 ### main() overview
 Let's take a deeper look at the program.
-See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level01/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level01/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 First ```main()``` prompts for a username and password, reading from stdin with ```fgets()```, and then calling ```verify_user_name()``` and ```verify_user_pass()```.
 

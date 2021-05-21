@@ -39,7 +39,7 @@ LOG: Starting back up: hi
 LOG: Finished back up hi
 ```
 
-See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level08/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level08/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ## Solution
 

@@ -37,7 +37,7 @@ Next ```main()``` calls ```auth()``` which performs a hashing algorithm on *Logi
 
 Finally, if ```auth()``` validates the *Login* and *Serial*, ```system()``` opens a shell.
 
-See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level06/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level06/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ### Find Serial with gdb
 

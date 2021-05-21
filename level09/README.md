@@ -27,7 +27,7 @@ level09@OverRide:~$ ./level09
 level09@OverRide:~$
 ```
 
-See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level09/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+See [disassembly notes](https://github.com/anyashuka/Override/blob/main/level09/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 ## Solution
 

@@ -22,7 +22,7 @@ hello
 
 ### main() overview
 
-Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level05/Ressources/disassembly_notes.md) for detailed gdb assembly breakdown.
+Let's take a deeper look at the program. See [dissasembly notes](https://github.com/anyashuka/Override/blob/main/level05/disassembly_notes.md) for detailed gdb assembly breakdown.
 
 This program is a basic ```tolower()```, which is of little interest to us. <br />
 However we do see a call to ```printf()```, which is vulnerable to string format exploits. <br />
