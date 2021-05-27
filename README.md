@@ -107,4 +107,4 @@ For each level, we reverse engineered the original *source.c* by examining the g
 
 ## Team
 
-I wrote this project in a team with the awesome [@dfinnis](https://github.com/dfinnis).
+I wrote this project in a team with the super talented [@dfinnis](https://github.com/dfinnis).
